@@ -132,7 +132,7 @@ export default {
         Agregar() {
             axios
             .post(this.$store.state.backURL + path,  {
-                nombreEstablecimiento: this.data.nombre,
+                estName: this.data.nombre,
                 dir: this.data.direccion,
                 tel: this.data.telefono,
                 cupoMax: this.data.cupo,

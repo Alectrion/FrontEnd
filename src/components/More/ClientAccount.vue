@@ -8,13 +8,13 @@
             </Menubar>
             <Dialog header="Editar Cuenta" :visible.sync="displayModal" :modal="true">
                 <span class="p-float-label">
-                    <InputText id="name" type="text" required v-model="data.name" autocomplete="off" placeholder="Nombre"/>
+                   <InputText type="text" v-model="account.username" disabled />
                     <label for="name"></label>
                 </span>
                 <br />
                 <span class="p-float-label">
-                    <InputText id="usuario" type="text" required v-model="account.username" autocomplete="off" placeholder="Usuario"/>
-                    <label for="usuario"></label>
+                    <InputText id="name" type="text" required v-model="account.names" autocomplete="off" placeholder="Nombre"/>
+                    <label for="name"></label>
                 </span>
                 <br />
                 <span class="p-float-label">
@@ -39,15 +39,15 @@
                     </button>
                   </div>
                   <div class="modal-body">
-                    <form v-on:submit.prevent="Editar()">
+                    <form v-on:submit.prevent="Editar()">  
                       <span class="p-float-label">
-                          <InputText id="name" type="text" required v-model="data.name" autocomplete="off" placeholder="Nombre"/>
-                          <label for="name"></label>
+                        <InputText type="text" v-model="account.username" disabled />
+                        <label for="name"></label>
                       </span>
                       <br />
                       <span class="p-float-label">
-                          <InputText id="usuario" type="text" required v-model="account.username" autocomplete="off" placeholder="Usuario"/>
-                    <label for="usuario"></label>
+                          <InputText id="name" type="text" required v-model="account.names" autocomplete="off" placeholder="Nombre"/>
+                          <label for="name"></label>
                       </span>
                       <br />
                       <span class="p-float-label">
@@ -94,7 +94,7 @@
 import axios from "axios";
 import {getAuthenticationToken} from '@/dataStorage';
 
-const path3 = "editar/";
+const path2 = "usuario/editar/";
 const path = "persona?access_token=" + getAuthenticationToken() ;
 
 export default {
@@ -103,11 +103,7 @@ export default {
     return {
       account: null,
       data: {
-        name: null,
-        email: null,
-        username: null,
-      },
-      selectedPersona: {
+        id: null,
         name: null,
         email: null,
         username: null,
@@ -161,18 +157,17 @@ export default {
     },
     Editar() {
       axios
-        .put(this.$store.state.backURL + path3 + this.account.id, {
-          names: this.data.name,
-          username: this.data.username,
-          email: this.data.email
+        .put(this.$store.state.backURL + path2 + this.account.id + "?access_token=" + getAuthenticationToken(), {
+          names: this.account.names,
+          username: this.account.username,
+          email: this.account.email
         })
         .then(response => {
-          console.log(response.data);
-          
-          alert("Registro exitoso")
+          console.log(response.data);  
+          alert("Actualizado")
         })
         .catch(error => {
-          alert(this.data.name);
+          alert(this.account.id);
           alert(error);
         });
     },
