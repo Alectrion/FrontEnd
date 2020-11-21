@@ -1,47 +1,180 @@
 <template>
   <div class="User">
-    <div class="Buscador">
-      <span class="p-input-icon-left">
-          <i class="pi pi-search" />
-          <InputText type="text" v-model="buscador" placeholder="Buscador" />
-      </span>
-    </div> 
-    <section class= "Boton">
-          <router-link to='/myaccount' style="text-decoration:none" title='Mi Cuenta'><Button icon="pi pi-user" class="p-button-rounded" /></router-link>
-    </section>
-    <section>
-      <div class="Favoritos">
-        <div id="Header"><a>Favoritos</a></div>
+    <div class="Menu">
+            <Menubar :model="items">
+                <template #end>
+                    <Menubar :model="items1"/>
+                </template>
+            </Menubar>
+    </div>
+    <div class="Establecimientos">
+      <DataTable ref="dt" :value="establecimientos" :selection.sync="selectedEstablecimiento" dataKey="id"
+        :paginator="true" :rows="10" :filters="filters"
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[5,10,25]"
+        currentPageReportTemplate="Resultados de {first} a {last} de {totalRecords} establecimientos">
+        <template #header>
+            <div class="table-header">
+              <span class="p-input-icon-left">
+                <i class="pi pi-search" />
+                <InputText v-model="filters['global']" placeholder="Buscador" style="width:150%" />
+              </span>
+            </div>
+        </template>
+        <Column selectionMode="multiple" headerStyle="width: 4rem"></Column>
+        <Column headerStyle="width: 5rem">
+          <template #body="slotProps">
+              <Button icon="pi pi-eye"  @click="showEstDialog(slotProps.data)" />
+          </template>
+        </Column>
+        <Column field="estName" header="Establecimiento" :sortable="true">
+            <template #filter>
+                <InputText type="text" v-model="filters['estName']" class="p-column-filter" placeholder="Buscar por nombre"/>
+            </template>
+        </Column>
+        <Column field="tipoEstablecimiento" header="Categoria" :sortable="true" filterMatchMode="equals">
+            <template #body="slotProps">
+                <span :class="'customer-badge tipoEstablecimiento-' + slotProps.data.tipoEstablecimiento">{{slotProps.data.tipoEstablecimiento}}</span>
+            </template>
+            <template #filter>
+                <Dropdown v-model="filters['tipoEstablecimiento']" :options="tipoEstablecimiento" placeholder="Todas" class="p-column-filter" :showClear="true">
+                    <template #option="slotProps">
+                        <span :class="'customer-badge tipoEstablecimiento-' + slotProps.option">{{slotProps.option}}</span>
+                    </template>
+                </Dropdown>
+            </template>
+        </Column>
+        <Column field="dir" header="Direccion" sortable></Column>
+        <Column field="tel" header="Telefono" sortable></Column>
+        <Column>
+            <template #body="slotProps">
+                <Button label="Hacer Reserva" @click="editProduct(slotProps.data)"/>
+            </template>
+        </Column>
+        <template #empty>
+            No se encontraron establecimientos.
+        </template>
+      </DataTable>
+    </div>
+    <Dialog :visible.sync="estDialog" :style="{width: '450px'}" header="Establecimiento" :modal="true" class="p-fluid">
+      <img :src="image" class="product-image" style="position:relative; width: 200px; left: 25%;"/>
+      <div class="p-field">
+          <label for="estName">Nombre Establecimiento</label>
+          <InputText id="name" v-model.trim="establecimiento.estName" required="true" autofocus :class="{'p-invalid': submitted && !establecimiento.estName}" />
+          <small class="p-invalid" v-if="submitted && !establecimiento.estName">Name is required.</small>
       </div>
-      <div class="Container">
-        
+      <div class="p-field">
+          <label for="description">Description</label>
+          <Textarea id="description" v-model="establecimiento.description" required="true" rows="3" cols="20" />
       </div>
-    </section>
-    <section class="Botones">
-      <button class="button1"><router-link to='/search' style="color:#25a9ca; text-decoration:none" title='Categoria'>SUPERMERCADO</router-link></button>
-      <button class="button1"><router-link to='/search' style="color:#25a9ca; text-decoration:none" title='Categoria'>GIMNASIO</router-link></button>
-      <button class="button1"><router-link to='/search' style="color:#25a9ca; text-decoration:none" title='Categoria'>BARBERÍA</router-link></button>
-      <button class="button1"><router-link to='/search' style="color:#25a9ca; text-decoration:none" title='Categoria'>RESTAURANTE</router-link></button>
-    </section>
-
+          <h3>Multi Axis</h3>
+          <Chart type="bar" :data="basicData" />
+      <div class="p-formgrid p-grid">
+          <div class="p-field p-col">
+              <label for="price">Price</label>
+              <InputNumber id="price" v-model="establecimiento.price" mode="currency" currency="USD" locale="en-US" />
+          </div>
+          <div class="p-field p-col">
+              <label for="quantity">Quantity</label>
+              <InputNumber id="quantity" v-model="establecimiento.quantity" integeronly />
+          </div>
+      </div>
+      </Dialog>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import image from "../img/restaurante.jpg"
+const path = "Establecimientos"
 
 export default {
   name: 'HomeUser',
   data(){
     return{
-      buscador:"",
-      username: null
-    };
+            establecimientos: null,
+            estDialog: false,
+            deleteProductDialog: false,
+            deleteProductsDialog: false,
+            establecimiento: {},
+            selectedEstablecimiento: null,
+            filters: {},
+            filters1: {},
+            submitted: false,
+            image: image,
+            tipoEstablecimiento: [
+                'Restaurante', 'Gimnasio', 'Supermercado', 'Barberia', 'Motel'
+            ],
+            basicData: {
+              labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mao', 'Junio', 'Julio'],
+              datasets: [
+                {
+                  label: 'Hombres',
+                  backgroundColor: '#7E57C2',
+                  data: [65, 59, 80, 81, 56, 55, 40]
+                },
+                {
+                  label: 'Mujeres',
+                  backgroundColor: '#858184',
+                  data: [28, 48, 40, 19, 86, 27, 90]
+                }
+              ]
+            },
+            items: [
+                {
+                    label: "Home",
+                    icon:'pi pi-home',
+                    to: "/home"
+                },
+                {
+                    label: "Mis reservas",
+                    icon: "pi pi-calendar",
+                    to: '/myaccount'
+                }
+            ],
+            items1: [
+                {
+                    label: 'Cliente',
+                    icon:'pi pi-fw pi-user',
+                    items:[
+                        {
+                          label: 'Mi Cuenta ',
+                          icon:'pi pi-fw pi-user',
+                          to: '/myaccount'
+                        },
+                        {
+                          label: 'Cerrar Sesion',
+                          icon:'pi pi-fw pi-power-off',
+                          to: '/login'
+                        }
+                    ]
+                },
+            ],
+        }
   },
+   mounted(){
+        this.VerEstablecimientos();
+    },
   methods: {
     onLogout() {
       this.$store.dispatch("doLogout");
       this.$router.push("Welcome");
-    }
+    },
+    VerEstablecimientos() {
+      axios.get(this.$store.state.backURL + path, {
+      })
+      .then(response => {
+          this.establecimientos = response.data;
+      })
+      .catch(err => {
+          alert(err);
+      })
+    },
+    showEstDialog() {
+      this.estDialog= true;
+    },
+    closeEstDialog() {
+      this.estDialog = false;
+    },
   },
 }
 </script>
@@ -49,57 +182,13 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css?family=Orbitron');
 .User {
-  background-image: url("../img/Home.png");
-  position: absolute;
-  width: 100%;
-  height: 100%; 
+    position: absolute;
+    background-color: #3d0c421a;
+    padding: 0px;
+    margin: 0%;
+    width: 100%;
+    height: 100%;
+    font-family: Orbitron;
 }
-
-.Favoritos {
-  position: absolute;
-  background:#917b90;
-  border: 1px solid #d8c7d7;
-  width: 60%;
-  height: 55px;
-  top: 18%;
-  transform: translateX(35%);
-  border-radius: 5px;
-}
-#Header {
-  font-family: Orbitron; 
-  font-size: 20px;
-  padding-top: 1%;
-  transform: translateX(1%);
-  color: #34383a;
-}
-.Container{
-  position: absolute;
-  background:#e0d5e0;
-  width: 60%;
-  height: 40%;
-  top: 26%;
-  transform: translateX(35%);
-  border-radius: 5px;
-}
-.button1 {
-  text-decoration: none;
-  position: relative;
-  top: 700px;
-  left: 450px;
-  font-family: Orbitron;
-  font-size: 22.5px;
-  letter-spacing: 1px;
-  background-color:  transparent; 
-  padding: 10px 30px;
-  transition-duration: 0.2s;
-  border: 2px solid #25a9ca;
-  display: inline-block;
-}
-
-.button1:hover {
-  background: #f2f2f2;
-  box-shadow: 0 0 10px #25a9ca, 0 0 40px #25a9ca, 0 0 80px #25a9ca;
-}
-
 
 </style>

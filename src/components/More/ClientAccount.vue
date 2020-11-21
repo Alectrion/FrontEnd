@@ -8,7 +8,7 @@
             </Menubar>
             <Dialog header="Editar Cuenta" :visible.sync="displayModal" :modal="true">
                 <span class="p-float-label">
-                    <InputText id="name" type="text" required v-model="account.names" autocomplete="off" placeholder="Nombre"/>
+                    <InputText id="name" type="text" required v-model="data.name" autocomplete="off" placeholder="Nombre"/>
                     <label for="name"></label>
                 </span>
                 <br />
@@ -39,9 +39,9 @@
                     </button>
                   </div>
                   <div class="modal-body">
-                    <form v-on:submit.prevent="Guardar()">
+                    <form v-on:submit.prevent="Editar()">
                       <span class="p-float-label">
-                          <InputText id="name" type="text" required v-model="account.names" autocomplete="off" placeholder="Nombre"/>
+                          <InputText id="name" type="text" required v-model="data.name" autocomplete="off" placeholder="Nombre"/>
                           <label for="name"></label>
                       </span>
                       <br />
@@ -69,8 +69,8 @@
           <thead class="thead-dark">
             <tr>
               <th scope="col">Mi Cuenta </th>
-              <th scope="col">Nombre</th>
               <th scope="col">Usuario</th>
+              <th scope="col">Nombre</th>
               <th scope="col">Email</th>
               <th scope="col">Accion</th>
             </tr>
@@ -78,10 +78,10 @@
           <tbody>
             <tr>
               <th scope="row" v-text="account.id"></th>
-              <td v-text="account.names"></td>
               <td v-text="account.username"></td>
+              <td v-text="account.names"></td>
               <td v-text="account.email"></td>
-              <Button label="Editar" class="p-button-rounded p-button-info" icon="pi pi-pencil" data-toggle="modal" data-target="#exampleModalCenter" />
+              <Button label="Editar" class="p-button-rounded p-button-info" icon="pi pi-pencil" data-toggle="modal" data-target="#exampleModalCenter"/>
             </tr>
           </tbody>
         </table>
@@ -94,7 +94,7 @@
 import axios from "axios";
 import {getAuthenticationToken} from '@/dataStorage';
 
-const path2 = "registro/nuevo-usuario/rol/";
+const path3 = "editar/";
 const path = "persona?access_token=" + getAuthenticationToken() ;
 
 export default {
@@ -161,16 +161,18 @@ export default {
     },
     Editar() {
       axios
-        .post(this.$store.state.backURL + path2 + this.data.rol, {
+        .put(this.$store.state.backURL + path3 + this.account.id, {
           names: this.data.name,
           username: this.data.username,
           email: this.data.email
         })
         .then(response => {
           console.log(response.data);
+          
           alert("Registro exitoso")
         })
         .catch(error => {
+          alert(this.data.name);
           alert(error);
         });
     },

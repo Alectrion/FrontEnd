@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "axios": "^0.21.0",
+    "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
+    "primeflex": "^2.0.0",
     "primeicons": "^4.0.0",
     "primevue": "^2.0.0",
     "vue": "^2.6.11",

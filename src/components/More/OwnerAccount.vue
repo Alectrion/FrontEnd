@@ -8,7 +8,7 @@
             </Menubar>
             <Dialog header="Nuevo Establecimiento" footer="Footer" :visible.sync="displayModal" :modal="true" >
                 <span class="p-float-label">
-                    <InputText id="nombre" type="text" v-model="data.nombre" placeholder="Nombre Establecimiento"/>
+                    <InputText id="nombre" type="text" v-model="data.nombre" placeholder="Nombre Establecimiento" autocomplete="off"/>
                     <label for="nombre"></label>
                 </span>
                 <br />
@@ -38,7 +38,7 @@
         </div>
         <div class="Datos">
             <DataTable :value="establecimientos" :paginator="true" :selection.sync="selectedEstablecimiento" selectionMode="single" dataKey="id" :rows="8">
-                <Column field="id" header="Id"></Column>
+                <Column field="id" header="Codigo"></Column>
                 <Column field="estName" header="Nombre Establecimiento"></Column>
                 <Column field="dir" header="Direccion"></Column>
                 <Column field="tel" header="Telefono"></Column>
@@ -56,6 +56,7 @@ import {getAuthenticationToken} from '@/dataStorage';
 
 const path = "propietario/nuevo_establecimiento?access_token=" + getAuthenticationToken();
 const path2 = "Establecimientos"
+const path3 = "propietario/establecimiento/"
 export default {
     name: "HomeOwner",
 
@@ -103,6 +104,9 @@ export default {
                 {
                     label: 'Borrar',
                     icon:'pi pi-fw pi-trash',
+                    command: () => {
+                        this.Borrar();
+                    }
                 },
             ],
             items1: [
@@ -121,7 +125,7 @@ export default {
         };
     },
     mounted(){
-        this.Prueba();
+        this.VerEstablecimientos();
     },
 
     methods:{
@@ -143,7 +147,7 @@ export default {
             });
             location.reload();
         },
-        Prueba() {
+        VerEstablecimientos() {
             axios.get(this.$store.state.backURL + path2, {
             })
             .then(response => {
@@ -153,11 +157,19 @@ export default {
                 alert(err);
             })
         },
+        Borrar() {
+            axios.delete(this.$store.state.backURL + path3 + this.selectedEstablecimiento.id + "?access_token=" + getAuthenticationToken(), {data: {foo: 'bar'}
+            })
+            .then(response => {
+                location.reload();
+                console.log(response);
+            })   
+        },
         showSaveModal() {
             this.displayModal = true;
         },
-        showEditModal(selectedEstablecimiento) {
-            this.data = {...selectedEstablecimiento};
+        showEditModal() {
+            this.data = this.selectedEstablecimiento;
             this.displayModal = true;
         },
         closeModal() {

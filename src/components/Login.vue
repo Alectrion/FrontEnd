@@ -1,5 +1,8 @@
 <template>
   <div class="Login">
+    <div class="image-gallery">
+      <img :src="image" />
+    </div>
     <form v-on:submit.prevent="Login()">
       <div class="container">
         <h1>INICIAR SESIÓN</h1>
@@ -19,6 +22,8 @@
 <script>
 import axios from 'axios';
 import {setAuthenticationToken} from '@/dataStorage';
+
+
 
 const path = "oauth/token";
 
