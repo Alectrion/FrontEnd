@@ -57,15 +57,11 @@ export default {
         .then(response => {
           console.log(response.data);
           alert("Registro exitoso")
+          this.$router.push("/login");
         })
         .catch(error => {
           alert(error);
         });
-        if(this.data.rol == 1){
-          this.$router.push("/login");
-        }else{
-          this.$router.push("/addestablishment");
-        } 
     },
   },
 };

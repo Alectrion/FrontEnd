@@ -13,12 +13,13 @@
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[5,10,25]"
         currentPageReportTemplate="Resultados de {first} a {last} de {totalRecords} establecimientos">
         <template #header>
-            <div class="table-header">
+            <div class="table-header" style="position:relative; left:23%;">
               <span class="p-input-icon-left">
                 <i class="pi pi-search" />
-                <InputText v-model="filters['global']" placeholder="Buscador" style="width:150%" />
+                <InputText v-model="filters['global']" placeholder="Buscador" style="width:300%; border: 2px solid purple;"  />
               </span>
             </div>
+            <br>
         </template>
         <Column selectionMode="multiple" headerStyle="width: 4rem"></Column>
         <Column headerStyle="width: 5rem">
@@ -47,7 +48,7 @@
         <Column field="tel" header="Telefono" sortable></Column>
         <Column field="cupoMax" header="Cupo Disponible" sortable>
           <template #body="slotProps">
-            <ProgressBar :value="aforo / slotProps.data.cupoMax * 100" />
+            <ProgressBar :value="slotProps.data.cupoMax" :showValue="false" style=" height:10px;"/>
           </template>
         </Column>
         <Column>
@@ -90,11 +91,10 @@
 <script>
 import axios from "axios";
 import image from "../img/restaurante.jpg"
-
 const path = "Establecimientos"
 
 export default {
-  name: 'HomeUser',
+  name: 'search',
   data(){
     return{
             establecimientos: null,
@@ -131,18 +131,7 @@ export default {
                     label: "Home",
                     icon:'pi pi-home',
                     to: "/home"
-                },
-                {
-                    label: "Buscador de Establecimientos",
-                    icon: "pi pi-search",
-                    to: '/search'
-                },
-                {
-                    label: "Mis reservas",
-                    icon: "pi pi-calendar",
-                    to: '/myaccount'
                 }
-                
             ],
             items1: [
                 {

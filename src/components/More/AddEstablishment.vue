@@ -42,7 +42,7 @@ export default {
     Agregar() {
       axios
         .post(this.$store.state.backURL + path + getAuthenticationToken(),  {
-          nombreEstablecimiento: this.data.nombreEst,
+          estName: this.data.nombreEst,
           dir: this.data.direccion,
           tel: this.data.telefono,
           tipoEstablecimiento: this.data.categoria,

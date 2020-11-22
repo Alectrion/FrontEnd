@@ -6,6 +6,7 @@ import CreateAccount from './components/CreateAccount.vue';
 import Home from './components/Home.vue';
 import MyAccount from './components/MyAccount.vue';
 import AddEstablishment from './components/More/AddEstablishment.vue';
+import Search from "./components/More/Search.vue"
 
 Vue.use(Router);
 
@@ -20,6 +21,7 @@ export default new Router({
         { path: '/createaccount', name: 'createaccount', component: CreateAccount},
         { path: '/addestablishment', name: 'addestablishment', component: AddEstablishment},
         { path: '/home', name: 'home', meta:{ requiresAuth: true}, component: Home},
-        { path: '/myaccount', name: 'myaccount', meta:{ requiresAuth: true}, component: MyAccount}
+        { path: '/myaccount', name: 'myaccount', meta:{ requiresAuth: true}, component: MyAccount},
+        { path: '/search', name: 'search', meta:{ requiresAuth: true}, component: Search}
       ]
 })

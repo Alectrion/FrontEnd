@@ -18,7 +18,7 @@ import DataView from 'primevue/dataview';
 import Dropdown from 'primevue/dropdown';
 import MultiSelect from 'primevue/multiselect';
 import Chart from 'primevue/chart';
-
+import ProgressBar from 'primevue/progressbar';
 
 
 Vue.config.productionTip = false
@@ -31,6 +31,7 @@ Vue.component('Dialog', Dialog);
 Vue.component('Dropdown', Dropdown);
 Vue.component('MultiSelect', MultiSelect);
 Vue.component('Chart', Chart);
+Vue.component('ProgressBar', ProgressBar);
 Vue.component('Dataview', DataView);
 
 
