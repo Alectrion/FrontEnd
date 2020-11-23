@@ -16,7 +16,7 @@
             <div class="table-header" style="position:relative; left:23%;">
               <span class="p-input-icon-left">
                 <i class="pi pi-search" />
-                <InputText v-model="filters['global']" placeholder="Buscador" style="width:300%; border: 2px solid purple;"  />
+                <InputText v-model="filters['global']" placeholder="Buscador de Establecimientos" style="width:300%; border: 2px solid purple;"  />
               </span>
             </div>
             <br>
@@ -61,47 +61,46 @@
         </template>
       </DataTable>
     </div>
-    <Dialog :visible.sync="estDialog" :style="{width: '450px'}" header="Establecimiento" :modal="true" class="p-fluid">
-      <img :src="image" class="product-image" style="position:relative; width: 200px; left: 25%;"/>
-      <div class="p-field">
-          <label for="estName">Nombre Establecimiento</label>
-          <InputText id="name" v-model.trim="establecimiento.estName" required="true" autofocus :class="{'p-invalid': submitted && !establecimiento.estName}" />
-          <small class="p-invalid" v-if="submitted && !establecimiento.estName">Name is required.</small>
-      </div>
-      <div class="p-field">
-          <label for="description">Description</label>
-          <Textarea id="description" v-model="establecimiento.description" required="true" rows="3" cols="20" />
-      </div>
-          <h3>Multi Axis</h3>
-          <Chart type="bar" :data="basicData" />
-      <div class="p-formgrid p-grid">
-          <div class="p-field p-col">
-              <label for="price">Price</label>
-              <InputNumber id="price" v-model="establecimiento.price" mode="currency" currency="USD" locale="en-US" />
-          </div>
-          <div class="p-field p-col">
-              <label for="quantity">Quantity</label>
-              <InputNumber id="quantity" v-model="establecimiento.quantity" integeronly />
-          </div>
-      </div>
+
+    <div class="Informacion">
+      <Dialog :visible.sync="estDialog" :style="{width: '500px'}" header="Informacion del Establecimiento" :modal="true" class="p-fluid">
+        <div class="p-field" style="text-align: center; font-family: Orbitron; font-size: 22px;">
+            <p>{{establecimiento.estName}}</p>
+        </div>
+        <div class="row">
+          <InputSwitch v-model="favoritos" />
+          <br>
+          <p style="position: relative; font-family: Orbitron; font-size: 20px; left:1%"> Favoritos</p>
+          <GoogleMap style="position: relative; left: 5%" :latitude= 4.636236781881298 :longitude= -74.07929296709305 />
+       </div>
+        <div class="p-field">
+            <label for="description">Descripcion</label>
+            <Textarea id="description" v-model="establecimiento.dir" required="true" rows="3" cols="20" disabled />
+        </div>
+            <h3>Grafica</h3>
+            <Chart type="bar" :data="basicData" />
       </Dialog>
+    </div>
   </div>
 </template>
 
 <script>
+import GoogleMap from "./GoogleMap";
 import axios from "axios";
 import image from "../img/restaurante.jpg"
 const path = "Establecimientos"
 
 export default {
   name: 'search',
+  components: {
+    GoogleMap
+  },
   data(){
     return{
             establecimientos: null,
+            favoritos: false,
             aforo: 20,
             estDialog: false,
-            deleteProductDialog: false,
-            deleteProductsDialog: false,
             establecimiento: {},
             selectedEstablecimiento: null,
             filters: {},
@@ -172,7 +171,8 @@ export default {
           alert(err);
       })
     },
-    showEstDialog() {
+    showEstDialog(establecimiento) {
+      this.establecimiento = {...establecimiento};
       this.estDialog= true;
     },
     closeEstDialog() {

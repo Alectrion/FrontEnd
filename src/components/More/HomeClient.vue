@@ -47,7 +47,7 @@
         <Column field="tel" header="Telefono" sortable></Column>
         <Column field="cupoMax" header="Cupo Disponible" sortable>
           <template #body="slotProps">
-            <ProgressBar :value="aforo / slotProps.data.cupoMax * 100" />
+            <ProgressBar :value="slotProps.data.cupoMax" />
           </template>
         </Column>
         <Column>
@@ -61,15 +61,13 @@
       </DataTable>
     </div>
     <Dialog :visible.sync="estDialog" :style="{width: '450px'}" header="Establecimiento" :modal="true" class="p-fluid">
+      <div class="p-field">
+          <label for="estName">{{selectedEstablecimiento}}</label>
+      </div>
       <img :src="image" class="product-image" style="position:relative; width: 200px; left: 25%;"/>
       <div class="p-field">
-          <label for="estName">Nombre Establecimiento</label>
-          <InputText id="name" v-model.trim="establecimiento.estName" required="true" autofocus :class="{'p-invalid': submitted && !establecimiento.estName}" />
-          <small class="p-invalid" v-if="submitted && !establecimiento.estName">Name is required.</small>
-      </div>
-      <div class="p-field">
           <label for="description">Description</label>
-          <Textarea id="description" v-model="establecimiento.description" required="true" rows="3" cols="20" />
+          <Textarea id="description" v-model="establecimiento.description" required="true" rows="3" cols="20" disabled/>
       </div>
           <h3>Multi Axis</h3>
           <Chart type="bar" :data="basicData" />
@@ -103,7 +101,7 @@ export default {
             deleteProductDialog: false,
             deleteProductsDialog: false,
             establecimiento: {},
-            selectedEstablecimiento: null,
+            selectedEstablecimiento: {},
             filters: {},
             filters1: {},
             submitted: false,

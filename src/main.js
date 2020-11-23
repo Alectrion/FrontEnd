@@ -19,6 +19,15 @@ import Dropdown from 'primevue/dropdown';
 import MultiSelect from 'primevue/multiselect';
 import Chart from 'primevue/chart';
 import ProgressBar from 'primevue/progressbar';
+import InputSwitch from 'primevue/inputswitch';
+import Textarea from 'primevue/textarea';
+import * as VueGoogleMaps from "vue2-google-maps";
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: "AIzaSyDp3Ud3SixagW8bJOwtosy5bBMB5JRNS_k",
+  },
+});
 
 
 Vue.config.productionTip = false
@@ -32,6 +41,8 @@ Vue.component('Dropdown', Dropdown);
 Vue.component('MultiSelect', MultiSelect);
 Vue.component('Chart', Chart);
 Vue.component('ProgressBar', ProgressBar);
+Vue.component('InputSwitch', InputSwitch);
+Vue.component('Textarea', Textarea);
 Vue.component('Dataview', DataView);
 
 

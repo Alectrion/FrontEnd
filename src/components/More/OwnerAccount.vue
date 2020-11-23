@@ -104,7 +104,6 @@ export default {
             establecimientos: null,
             displayModal: false,
             editModal: false,
-            establishment: {},
             selectedEstablecimiento: {},
             data: {
                 id: null,
