@@ -24,13 +24,8 @@ import ProgressBar from 'primevue/progressbar';
 import InputSwitch from 'primevue/inputswitch';
 import Textarea from 'primevue/textarea';
 import RadioButton from 'primevue/radiobutton';
+import OrderList from 'primevue/orderlist';
 import * as VueGoogleMaps from "vue2-google-maps";
-
-Vue.use(VueGoogleMaps, {
-  load: {
-    key: "AIzaSyDp3Ud3SixagW8bJOwtosy5bBMB5JRNS_k",
-  },
-});
 
 
 Vue.config.productionTip = false
@@ -47,8 +42,15 @@ Vue.component('ProgressBar', ProgressBar);
 Vue.component('InputSwitch', InputSwitch);
 Vue.component('Textarea', Textarea);
 Vue.component('RadioButton', RadioButton);
+Vue.component('OrderList', OrderList);
 Vue.component('Dataview', DataView);
 
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: "AIzaSyDp3Ud3SixagW8bJOwtosy5bBMB5JRNS_k",
+  },
+});
 
 new Vue({
   router,

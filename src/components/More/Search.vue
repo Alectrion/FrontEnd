@@ -53,7 +53,8 @@
         </Column>
         <Column>
             <template #body="slotProps">
-                <Button label="Hacer Reserva" @click="editProduct(slotProps.data)"/>
+                
+<Button label="Hacer Reserva" @click="showbookingDialog(slotProps.data)"/>
             </template>
         </Column>
         <template #empty>
@@ -102,6 +103,17 @@
         </div>
       </Dialog>
     </div>
+    <div class="Reserva" style="position: relative; width: 20%; height: 100%" >
+      <Dialog :visible.sync="bookingDialog" :style="{width: '50vw'}" :header = "establecimiento.estName" :modal="true" class="p-fluid">
+        <h4>Reserva</h4>
+        <Dropdown v-model="selectedhour" :options="hours" optionLabel="name" placeholder="Seleccione un horario" :editable="true" />
+        <img :src="image" class="product-image" style="position:relative; width: 200px; left: 25%;"/>
+        <template #footer>
+          <Button label="Guardar" icon="pi pi-check" />
+          <Button label="Cancelar" icon="pi pi-times" @click="closebookingDialog()" class="p-button-secondary" />
+        </template>
+      </Dialog>
+    </div>
   </div>
 </template>
 
@@ -118,10 +130,12 @@ export default {
   },
   data(){
     return{
+            selectedhour: null,
             establecimientos: null,
             favoritos: false,
             aforo: 20,
             estDialog: false,
+            bookingDialog: false,
             establecimiento: {},
             selectedEstablecimiento: null,
             filters: {},
@@ -129,6 +143,23 @@ export default {
             submitted: false,
             city: 'true',
             image: image,
+            hours: [
+                {name: '7am - 8am', code: '7'},
+                {name: '8am - 9am', code: '8'},
+                {name: '9am - 10am', code: '9'},
+                {name: '10am - 11am', code: '10'},
+                {name: '11am - 12pm', code: '11'},
+                {name: '12pm - 1pm', code: '12'},
+                {name: '1pm - 2pm', code: '13'},
+                {name: '2pm - 3pm', code: '14'},
+                {name: '3pm - 4pm', code: '15'},
+                {name: '4pm - 5pm', code: '16'},
+                {name: '5pm - 6pm', code: '17'},
+                {name: '6pm - 7pm', code: '18'},
+                {name: '7pm - 8pm', code: '19'},
+                {name: '8pm - 9pm', code: '20'},
+                {name: '9pm - 10pm', code: '21'}
+            ],
             tipoEstablecimiento: [
                 'Restaurante', 'Gimnasio', 'Supermercado', 'Barberia', 'Motel'
             ],
@@ -194,6 +225,13 @@ export default {
     },
     closeEstDialog() {
       this.estDialog = false;
+    },
+    showbookingDialog(establecimiento) {
+      this.establecimiento = {...establecimiento};
+      this.bookingDialog= true;
+    },
+    closebookingDialog() {
+      this.bookingDialog = false;
     },
   },
 }
