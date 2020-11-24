@@ -1,8 +1,8 @@
 <template>
   <gmap-map
     :center="center"
-    :zoom="16"
-    style=" position: relative; width: 60%; height: 150px"
+    :zoom="17"
+    style=" position: relative; width: 100%; height: 200px"
   >
     <gmap-marker
       :key="index"
