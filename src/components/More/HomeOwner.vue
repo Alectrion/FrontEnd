@@ -1,9 +1,9 @@
 <template>
     <div class="Owner">
         <div class="Menu">
-            <Menubar :model="items">
+            <Menubar :model="items" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;">
                 <template #end>
-                    <Menubar :model="items1"/>
+                    <Menubar :model="items1" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;"/>
                 </template>
             </Menubar>
         </div>
@@ -63,7 +63,7 @@
                     </span>
                     <br />
                     <span class="p-float-label">
-                        <Textarea id="description" v-model="selectedEstablecimiento.muro" required="true" rows="3" cols="25" placeholder="Descripción" />
+                        <Textarea id="description" v-model="selectedEstablecimiento.muro" required="true" rows="3" cols="45" placeholder="Descripción" />
                         <label for="Descripción"></label>
                     </span>
                     <br />
@@ -80,12 +80,12 @@
         <div class="Datos">
             <DataTable :value="establecimientos" :expandedRows.sync="expandedRows" dataKey="id" :paginator="true" :rows="1"
                 @row-expand="onRowExpand" @row-collapse="onRowCollapse">
-                <Column :expander="true" headerStyle="width: 3rem" />
-                <Column field="estName" header="Nombre Establecimiento" sortable></Column>
-                <Column field="dir" header="Direccion" sortable></Column>
-                <Column field="tel" header="Telefono" sortable></Column>
-                <Column field="tipoEstablecimiento" header="Categoria" sortable></Column>
-                <Column field="cupoMax" header="Cupo Maximo" sortable></Column>
+                <Column headerStyle="background-color: #343a40; width: 3rem" :expander="true" />
+                <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="estName" header="NOMBRE ESTABLECIMIENTO" sortable></Column>
+                <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="dir" header="DIRECCION" sortable></Column>
+                <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="tel" header="TELEFONO" sortable></Column>
+                <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="tipoEstablecimiento" header="CATEGORIA" sortable></Column>
+                <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="cupoMax" header="CUPO MAXIMO" sortable></Column>
                 <template #expansion="slotProps">
                     <div class="orders-subtable">
                         <div class="p-field" style="text-align: center; font-family: Orbitron; color:#455eff; height: 52px;">
@@ -111,7 +111,7 @@
                         </div>
                         <div class="p-field">
                             <h5>Muro:</h5>
-                            <Textarea v-model="slotProps.data.muro" :autoResize="true" rows="5" cols="30" />
+                            <Textarea v-model="slotProps.data.muro" :autoResize="true" rows="5" cols="30" style="width: 50%"/>
                             <br>
                         </div>
                             <h5>Flujo de Personas:</h5>
@@ -119,14 +119,13 @@
                             <br>
                         <div class="Mapa">
                             <h5>Mapa:</h5>
-                            <GoogleMap style="position: relative;" :latitude= 4.636236781881298 :longitude= -74.07929296709305 />
+                            <GoogleMap style="position: relative;" :latitude= parseFloat(slotProps.data.latitud) :longitude= parseFloat(slotProps.data.longitud) />
                         </div>
                     </div>
                 </template>
             </DataTable>
         </div>
     </div>
-    
 </template>
 
 <script>
@@ -178,14 +177,14 @@ export default {
             },
 			items: [
                 {
-                    label: "Home",
+                    label: "HOME",
                     icon:'pi pi-home',
                     to: "/home"
                 },
                 {
-                    label: "Mis establecimientos",
-                    icon:'pi pi-table',
-                    to: '/tabmenu/mis-establecimientos'
+                    label: "MIS ESTABLECIMIENTOS",
+                    icon:'pi pi-briefcase',
+                    to: '/myaccount'
                 },
             ],
             items1: [

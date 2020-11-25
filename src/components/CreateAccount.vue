@@ -10,16 +10,12 @@
       <form v-on:submit.prevent="Guardar()">
         <label for="name"><b>Nombre</b></label><br>
         <input type="text" name="name" required v-model="data.name" autocomplete="off"><br>
-        <br>
         <label for="email"><b>Correo</b></label><br>
         <input type="text" name="email" required v-model="data.email" autocomplete="off"><br>
-        <br>
         <label for="username"><b>Usuario</b></label><br>
         <input type="text" name="username" required v-model="data.username" autocomplete="off"><br>
-        <br>
         <label for="password"><b>Contraseña</b></label><br>
         <input type="password" name="password" required v-model="data.password" ><br>
-        <br>
         <button id="boton2" type="submit">GUARDAR</button><br>
       </form>
     </div>
@@ -110,7 +106,7 @@ h1 {
 }
 p {
   position: relative;
-  top: 20px;
+  top: 7%;
   color: white;
   font-family: Orbitron;
   font-size: 14px;
@@ -119,7 +115,7 @@ p {
 }
 label {
   position: relative;
-  top: 25px;
+  top: 30px;
   color: white;
   text-shadow: #a945c7 0px 0px 5px;
   font-family: Consolas;
@@ -127,7 +123,7 @@ label {
 }
 input {
   position: relative;
-  top: 30px;
+  top: 25px;
   width: 75%;
   padding: 5px 5px;
   border: 1px solid #a945c7;

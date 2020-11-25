@@ -1,11 +1,12 @@
 <template >
     <div class="myaccount">
       <div class="Menu">
-            <Menubar :model="items">
+            <Menubar :model="items" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;">
                 <template #end>
                     <Menubar :model="items1"/>
                 </template>
             </Menubar>
+            
             <Dialog header="Editar Cuenta" :visible.sync="displayModal" :modal="true">
                 <span class="p-float-label">
                    <InputText type="text" v-model="account.username" disabled />
@@ -28,51 +29,16 @@
                 </template>
             </Dialog>
 
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Editar Cuenta</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <form v-on:submit.prevent="Editar()">  
-                      <span class="p-float-label">
-                        <InputText type="text" v-model="account.username" disabled />
-                        <label for="name"></label>
-                      </span>
-                      <br />
-                      <span class="p-float-label">
-                          <InputText id="name" type="text" required v-model="account.names" autocomplete="off" placeholder="Nombre"/>
-                          <label for="name"></label>
-                      </span>
-                      <br />
-                      <span class="p-float-label">
-                          <InputText id="Email" type="text" required v-model="account.email" autocomplete="off" placeholder="Email"/>
-                          <label for="email"></label>
-                      </span>
-                     </form>
-                  </div>
-                  <div class="modal-footer">
-                    <Button label="Guardar" icon="pi pi-check" @click="Editar" />
-                    <Button label="Cancelar" icon="pi pi-times" data-dismiss="modal" class="p-button-secondary" />
-                  </div>
-                </div>
-              </div>
-            </div>
       </div>
         <div class="datos">
         <table class="table table-hover">
           <thead class="thead-dark">
-            <tr>
-              <th scope="col">Mi Cuenta </th>
-              <th scope="col">Usuario</th>
-              <th scope="col">Nombre</th>
-              <th scope="col">Email</th>
-              <th scope="col">Accion</th>
+            <tr style="font-family: Orbitron; letter-spacing: 1px;">
+              <th scope="col">ID</th>
+              <th scope="col">USUARIO</th>
+              <th scope="col">NOMBRE</th>
+              <th scope="col">EMAIL</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -81,11 +47,12 @@
               <td v-text="account.username"></td>
               <td v-text="account.names"></td>
               <td v-text="account.email"></td>
-              <Button label="Editar" class="p-button-rounded p-button-info" icon="pi pi-pencil" data-toggle="modal" data-target="#exampleModalCenter"/>
+              <Button label="EDITAR" style="font-family: Orbitron; background-color: #883cae; border-color: #3d0c421a;" class="p-button-rounded p-button-info" icon="pi pi-pencil" @click="showEditModal"/>
             </tr>
           </tbody>
         </table>
       </div>
+      <h1 style="text-shadow: black 0px 0px 15px; opacity: 0.25; font-size: 120px; position: absolute; left: 50%; transform: translateX(-50%); bottom: 10px; font-family: Orbitron; font-weight: bold;">ALECTRION</h1>
     </div>
 </template>
 
@@ -110,17 +77,14 @@ export default {
       },
       items: [
                 {
-                    label: "Home",
+                    label: "HOME",
                     icon:'pi pi-home',
                     to: "/home"
-                },
-                {
-                    label: "Usuario",
                 },
             ],
             items1: [
                 {
-                    label: 'Salir',
+                    label: "Mi Cuenta",
                     icon:'pi pi-fw pi-user',
                     items:[
                         {
@@ -157,7 +121,8 @@ export default {
         })
         .then(response => {
           console.log(response.data);  
-          alert("Actualizado")
+          alert("Actualizado");
+          this.closeModal();
         })
         .catch(error => {
           alert(this.account.id);

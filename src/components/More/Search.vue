@@ -104,7 +104,7 @@
             <br>
         <div class="Mapa">
           <h5>Mapa:</h5>
-          <GoogleMap style="position: relative;" :latitude= 4.636236781881298 :longitude= -74.07929296709305 />
+          <GoogleMap style="position: relative;" :latitude= parseFloat(establecimiento.latitud) :longitude= parseFloat(establecimiento.longitud) />
         </div>
       </Dialog>
     </div>

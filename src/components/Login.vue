@@ -95,13 +95,13 @@ h1 {
   color: white;
   text-shadow: #a945c7 0px 0px 10px;
   position: relative;
-  top: 15px;
+  top: 10%;
   font-family: Orbitron;
   font-size: 22px;
 }
 label {
   position: relative;
-  top: 82px;
+  top: 22.5%;
   color: white;
   text-shadow: #a945c7 0px 0px 5px;
   font-family: Consolas;
@@ -119,7 +119,7 @@ input {
 }
 button {
   position: relative;
-  top: 155px;
+  bottom: -35%;
   background-color: #320a30;
   color: white;
   border: 1px solid #a945c7;

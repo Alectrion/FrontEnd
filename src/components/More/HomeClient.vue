@@ -1,9 +1,9 @@
 <template>
   <div class="User">
     <div class="Menu">
-            <Menubar :model="items">
+            <Menubar :model="items" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;">
                 <template #end>
-                    <Menubar :model="items1"/>
+                    <Menubar :model="items1" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;"/>
                 </template>
             </Menubar>
     </div>
@@ -64,7 +64,7 @@
                         </div>
                         <div class="p-field">
                             <h5>Muro:</h5>
-                            <Textarea v-model="slotProps.data.muro" :autoResize="true" rows="5" cols="30" />
+                            <Textarea v-model="slotProps.data.muro" :autoResize="true" rows="5" cols="30" disabled />
                             <br>
                         </div>
                             <h5>Flujo de Personas:</h5>
@@ -72,7 +72,7 @@
                             <br>
                         <div class="Mapa">
                             <h5>Mapa:</h5>
-                            <GoogleMap style="position: relative;" :latitude= 4.636236781881298 :longitude= -74.07929296709305 />
+                            <GoogleMap style="position: relative;" :latitude= parseFloat(slotProps.data.latitud) :longitude= parseFloat(slotProps.data.longitud) />
                         </div>
                     </div>
                 </template>
@@ -80,11 +80,11 @@
         </div>
       </TabPanel>
     </TabView>
-     
   </div>
 </template>
 
 <script>
+import GoogleMap from "./GoogleMap";
 import axios from "axios";
 import image from "../img/restaurante.jpg"
 
@@ -92,6 +92,9 @@ const path = "Establecimientos"
 
 export default {
   name: 'HomeUser',
+  components: {
+    GoogleMap
+  },
   data(){
     return{
             establecimientos: null,
@@ -121,20 +124,15 @@ export default {
             },
             items: [
                 {
-                    label: "Home",
+                    label: "HOME",
                     icon:'pi pi-home',
                     to: "/home"
                 },
                 {
-                    label: "Buscador de Establecimientos",
+                    label: "BUSCADOR DE ESTABLECIMIENTOS",
                     icon: "pi pi-search",
                     to: '/search'
                 },
-                {
-                    label: "Mis reservas",
-                    icon: "pi pi-calendar",
-                    to: '/myaccount'
-                }
                 
             ],
             items1: [
@@ -198,5 +196,4 @@ export default {
     font-family: Orbitron;
     
 }
-
 </style>

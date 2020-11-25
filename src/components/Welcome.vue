@@ -22,21 +22,18 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css?family=Orbitron');
-
 .Welcome {
   position: absolute;
   background-image: url("img/Welcome.jpg");
   width: 100%;
   height: 100%;
 }
-
 .ALECTRION {
   position: relative;
   top: 30%;
   transform: translateY(-50%);
   text-align: center;
 }
-
 p {
   font-family: Orbitron;
   font-size: 200px;
@@ -45,19 +42,17 @@ p {
   text-shadow: #a945c7 0px 0px 30px;
   margin: 0px
 }
-
 .Mensaje {
   font-family: Orbitron;
-  font-size: 35px;
+  font-size: 45px;
   color: #a945c7;
   text-shadow: #a945c7 0px 0px 10px;
   position: relative;
   bottom: 25px;
 }
-
 button {
   position: relative;
-  top: 175px;
+  top: 150px;
   left: 50%;
   transform: translateX(-100%);
   font-family: Consolas;
@@ -69,12 +64,10 @@ button {
   border: 1px solid #a945c7;
   display: inline-block;
 }
-
 button:hover {
   background: #f2f2f2;
   box-shadow: 0 0 10px #a945c7, 0 0 40px #a945c7, 0 0 80px #a945c7;
 }
-
 footer {
   font-family: Consolas;
   font-size: 20px;

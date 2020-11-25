@@ -1,11 +1,13 @@
 <template>
     <div class="Owner">
         <div class="Menu">
-            <Menubar :model="items">
+            <Menubar :model="items" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;">
                 <template #end>
-                    <Menubar :model="items1"/>
+                    <Menubar :model="items1" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;"/>
                 </template>
             </Menubar>
+
+<!--Dialog Agregar Establecimiento-->
             <Dialog header="Nuevo Establecimiento" footer="Footer" :visible.sync="displayModal" :modal="true" >
                 <span class="p-float-label">
                     <InputText id="nombre" type="text" v-model="data.nombre" placeholder="Nombre Establecimiento" autocomplete="off"/>
@@ -26,13 +28,24 @@
                     <label for="cupo"></label>
                 </span>
                 <br />
+                <h5>Ingresar Ubicacion: </h5>
+                <span class="p-float-label">
+                    <InputText id="cupo" type="text"  v-model="data.latitud" placeholder="Latitud"/>
+                    <label for="cupo"></label>
+                </span>
+                <br />
+                <span class="p-float-label">
+                    <InputText id="cupo" type="text"  v-model="data.longitud" placeholder="Longitud"/>
+                    <label for="cupo"></label>
+                </span>
+                <br />
                 <span class="p-float-label">
                     <Textarea id="description" v-model="data.muro" required="true" rows="3" cols="25" placeholder="Descripción" />
                     <label for="Descripción"></label>
                 </span>
                 <br />
                 <span class="p-float-label">
-                    <Dropdown v-model="data.categoria" :options="categorias" optionLabel="name" placeholder="Seleccionar Categoria" />
+                    <Dropdown v-model="data.categoria" :options="categorias" placeholder="Seleccionar Categoria" />
                     <label for="categoria"></label>
                 </span>
                 <template #footer>
@@ -40,10 +53,12 @@
                     <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
                 </template>
             </Dialog>
+
+<!--Dialog Editar Establecimiento-->            
             <div class="Editar">
                 <Dialog header="Editar Establecimiento" footer="Footer" :visible.sync="editModal" :modal="true" >
                     <span class="p-float-label">
-                        <InputText id="nombre" type="text" v-model="selectedEstablecimiento.estName" placeholder="Nombre Establecimiento" disabled/>
+                        <InputText id="nombre" type="text" v-model="selectedEstablecimiento.estName" placeholder="Escoge uno primero!" disabled/>
                         <label for="nombre"></label>
                     </span>
                     <br />
@@ -58,6 +73,17 @@
                     <br />
                     <span class="p-float-label">
                         <InputText id="cupo" type="text" required v-model="selectedEstablecimiento.cupoMax" placeholder="Cupo"/>
+                        <label for="cupo"></label>
+                    </span>
+                    <br />
+                    <h5>Ingresar Ubicacion: </h5>
+                    <span class="p-float-label">
+                        <InputText id="cupo" type="text"  v-model="selectedEstablecimiento.latitud" placeholder="Latitud"/>
+                        <label for="cupo"></label>
+                    </span>
+                    <br />
+                    <span class="p-float-label">
+                        <InputText id="cupo" type="text"  v-model="selectedEstablecimiento.longitud" placeholder="Longitud"/>
                         <label for="cupo"></label>
                     </span>
                     <br />
@@ -77,23 +103,65 @@
                 </Dialog>
             </div>
         </div>
+
+<!--Dialog Editar Cuenta-->
+        <Dialog header="Editar Cuenta" :visible.sync="displayEdit" :modal="true">
+            <span class="p-float-label">
+                <InputText type="text" v-model="account.username" disabled />
+                <label for="name"></label>
+            </span>
+            <br />
+            <span class="p-float-label">
+                <InputText id="name" type="text" required v-model="account.names" autocomplete="off" placeholder="Nombre"/>
+                <label for="name"></label>
+            </span>
+            <br />
+            <span class="p-float-label">
+                <InputText id="Email" type="text" required v-model="account.email" autocomplete="off" placeholder="Email"/>
+                <label for="email"></label>
+            </span>
+        
+            <template #footer>
+                <Button label="Guardar" icon="pi pi-check" @click="EditarCuenta" />
+                <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
+            </template>
+        </Dialog>
+
+<!--Tabla Cuenta-->  
+        <div class="datos">
+            <table class="table table-hover">
+            <thead class="thead-dark"> 
+                <tr style="font-family: Orbitron; letter-spacing: 1px;">
+                <th scope="col">ID </th>
+                <th scope="col">USUARIO</th>
+                <th scope="col">NOMBRE</th>
+                <th scope="col">EMAIL</th>
+                <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <th scope="row" v-text="account.id"></th>
+                <td v-text="account.username"></td>
+                <td v-text="account.names"></td>
+                <td v-text="account.email"></td>
+                <Button label="EDITAR" style="font-family: Orbitron; background-color: #883cae; border-color: #3d0c421a;" class="p-button-rounded p-button-info" icon="pi pi-pencil" @click="showEditAccount"/>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+        <br><br><br><br><br>
+        <h1 style="text-align: center; font-family: Orbitron; font-weight: bold;">MIS ESTABLECIMIENTOS</h1>
+
+<!--Tabla Establecimientos-->           
         <div class="Datos">
-            <DataTable :value="establecimientos" :paginator="true" :selection.sync="selectedEstablecimiento" selectionMode="single" dataKey="id" :rows="8">
-                <Column headerStyle="width: 5rem" field="id" header="Codigo"></Column>
-                <Column headerStyle="width: 5rem">
-                    <template #body="slotProps">
-                        <Button icon="pi pi-eye"  @click="showEstDialog(slotProps.data)" />
-                    </template>
-                </Column>
-                <Column field="estName" header="Nombre Establecimiento"></Column>
-                <Column field="dir" header="Direccion"></Column>
-                <Column field="tel" header="Telefono"></Column>
-                <Column field="tipoEstablecimiento" header="Categoria"></Column>
-                <Column field="cupoMax" header="Cupo "></Column>
+            <DataTable :value="establecimientos" style="width: 500px; position: relative; left: 50%; transform: translateX(-50%);" :selection.sync="selectedEstablecimiento" selectionMode="single" dataKey="id" :rows="1">
+                <Column headerStyle="color: white; width: 5rem; font-family: Orbitron; background-color: #343a40 " field="id" header="ID"></Column>
+                <Column headerStyle="width: 2rem; font-family: Orbitron; background-color: #343a40"></Column>
+                <Column headerStyle="color: white; font-family: Orbitron; background-color: #343a40" field="estName" header="NOMBRE"></Column>
             </DataTable>
         </div>
     </div>
-    
 </template>
 
 <script>
@@ -101,7 +169,9 @@ import axios from "axios";
 import {getAuthenticationToken} from '@/dataStorage';
 
 const path = "propietario/establecimiento"
-const path2 = "propietario/nuevo_establecimiento?access_token=" + getAuthenticationToken();
+const path2 = "usuario/editar/";
+const path3 = "persona?access_token=" + getAuthenticationToken() ;
+const path4 = "propietario/nuevo_establecimiento?access_token=" + getAuthenticationToken();
 
 
 
@@ -114,6 +184,7 @@ export default {
             establecimientos: null,
             establecimiento: {},
             selectedEstablecimiento: {},
+            displayEdit: false,
             displayModal: false,
             editModal: false,
             data: {
@@ -123,33 +194,36 @@ export default {
                 telefono: null,
                 cupo: null,
                 categoria: null,
-                muro:null
+                muro:null,
+                latitud:null,
+                longitud:null
             },
+            account: null,
             categorias: [
                 'Restaurante', 'Gimnasio', 'Supermercado', 'Barberia', 'Motel'
             ],
 			items: [
                 {
-                    label: "Home",
+                    label: "HOME",
                     icon:'pi pi-home',
                     to: "/home"
                 },
                 {
-                    label: 'Agregar Establecimiento',
+                    label: 'AGREGAR ESTABLECIMIENTO',
                     icon:'pi pi-fw pi-plus',
                     command: () => {
                     this.showSaveModal();
                     }
                 },
                 {
-                    label: 'Editar',
+                    label: 'EDITAR',
                     icon:'pi pi-fw pi-pencil',
                     command: () => {
                     this.showEditModal();
                     }
                 },
                 {
-                    label: 'Borrar',
+                    label: 'BORRAR',
                     icon:'pi pi-fw pi-trash',
                     command: () => {
                         this.Borrar();
@@ -158,11 +232,11 @@ export default {
             ],
             items1: [
                 {
-                    label: 'Salir',
+                    label: "Mi Cuenta",
                     icon:'pi pi-fw pi-user',
                     items:[
                         {
-                            label: 'Cerrar Sesion',
+                            label: 'Cerrar Sesión',
                             icon:'pi pi-fw pi-power-off',
                             to: '/login'
                         }
@@ -173,22 +247,35 @@ export default {
     },
     mounted(){
         this.ShowEstablecimientos();
+        this.Prueba();
     },
 
     methods:{
+        Prueba() {
+            axios.get(this.$store.state.backURL + path3, {
+            })
+            .then(response => {
+                this.account = response.data;
+            })
+            .catch(err => {
+                alert(err);
+            })
+        },
         Agregar() {
             axios
-            .post(this.$store.state.backURL + path2,  {
+            .post(this.$store.state.backURL + path4,  {
                 estName: this.data.nombre,
                 dir: this.data.direccion,
                 tel: this.data.telefono,
                 cupoMax: this.data.cupo,
                 tipoEstablecimiento: this.data.categoria,
-                muro: this.data.muro
+                muro: this.data.muro,
+                latitud: this.data.latitud,
+                longitud: this.data.longitud
             })
             .then(response => {
-              console.log(response.data);
-              alert("Registro exitoso")
+                console.log(response.data);
+                alert("Registro exitoso");
             })
             .catch(error => {
               alert(error);
@@ -212,7 +299,9 @@ export default {
                 tel: this.selectedEstablecimiento.tel,
                 cupoMax: this.selectedEstablecimiento.cupoMax,
                 tipoEstablecimiento: this.selectedEstablecimiento.tipoEstablecimiento,
-                muro: this.selectedEstablecimiento.muro
+                muro: this.selectedEstablecimiento.muro,
+                latitud: this.selectedEstablecimiento.latitud,
+                longitud: this.selectedEstablecimiento.longitud
             })
             .then(response => {
                 this.establecimientos = response.data;
@@ -222,6 +311,23 @@ export default {
                 alert(err);
             })
             location.reload();
+        },
+        EditarCuenta() {
+        axios
+            .put(this.$store.state.backURL + path2 + this.account.id + "?access_token=" + getAuthenticationToken(), {
+            names: this.account.names,
+            username: this.account.username,
+            email: this.account.email
+            })
+            .then(response => {
+            console.log(response.data);  
+            alert("Actualizado");
+            this.closeModal();
+            })
+            .catch(error => {
+            alert(this.account.id);
+            alert(error);
+            });
         },
         Borrar() {
             axios.delete(this.$store.state.backURL + path + "/" + this.selectedEstablecimiento.id + "?access_token=" + getAuthenticationToken(), {data: {foo: 'bar'}
@@ -237,7 +343,12 @@ export default {
         showEditModal() {
             this.editModal = true;
         },
+        showEditAccount() {
+        this.data;
+        this.displayEdit = true;
+        },
         closeModal() {
+            this.displayEdit = false;
             this.displayModal = false;
             this.editModal = false;
         }
@@ -254,7 +365,6 @@ export default {
     margin: 0%;
     width: 100%;
     height: 100%;
-    font-family: Orbitron;
 }
 
 
