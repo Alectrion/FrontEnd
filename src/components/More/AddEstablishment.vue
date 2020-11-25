@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div class="Login">
     <div class="container">
       <h1>AGREGAR ESTABLECIMIENTO</h1>
@@ -16,10 +17,38 @@
         <button id="boton" type="submit">GUARDAR</button><br>
       </form>
     </div>
+=======
+  <div class="CreateOwner">
+    <b>Nombre Establecimiento</b>
+    <br>
+    <input type="text" name="password">
+    <br>
+    <b>Dirección</b>
+    <br>
+    <input type="text" name="password">
+    <br>
+    <b>Teléfono</b>
+    <br>
+    <input type="text" name="password">
+    <br>
+    <b>Cupo Máximo</b>
+    <br>
+    <input type="text" name="password">
+    <br>
+    <b>Tipo Establecimiento</b>
+    <br>
+    <input type="text" name="password">
+    <br>
+    <b>Link de Camara</b>
+    <br>
+    <input type="text" name="password">
+    <br>
+>>>>>>> valentina
   </div>
 </template>
 
 <script>
+<<<<<<< HEAD
 import axios from "axios";
 import {getAuthenticationToken} from '@/dataStorage';
 
@@ -164,3 +193,12 @@ input {
 
 </style>
 
+=======
+export default {
+  name: 'CreateOwner'
+}
+</script>
+
+<style>
+</style>
+>>>>>>> valentina
