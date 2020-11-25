@@ -1,9 +1,9 @@
 <template>
   <div class="User">
     <div class="Menu">
-            <Menubar :model="items">
+            <Menubar :model="items" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;">
                 <template #end>
-                    <Menubar :model="items1"/>
+                    <Menubar :model="items1" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;"/>
                 </template>
             </Menubar>
     </div>
@@ -21,20 +21,20 @@
           </div>
           <br>
         </template>
-        <Column selectionMode="multiple" headerStyle="width: 4rem"></Column>
-        <Column headerStyle="width: 5rem">
+        <Column selectionMode="multiple" headerStyle="width: 4rem; background-color: #343a40;"></Column>
+        <Column headerStyle="width: 5rem; background-color: #343a40;">
           <template #body="slotProps">
               <Button icon="pi pi-eye"  @click="showEstDialog(slotProps.data)" />
           </template>
         </Column>
-        <Column field="estName" header="Establecimiento" :sortable="true" >
+        <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="estName" header="Establecimiento" :sortable="true" >
           <template #filter>
             <InputText type="text" v-model="filters['estName']" class="p-column-filter" placeholder="Buscar por nombre" />
           </template>
         </Column>
-        <Column field="dir" header="Direccion" sortable></Column>
-        <Column field="tel" header="Telefono" sortable></Column>
-        <Column field="tipoEstablecimiento" header="Categoria" :sortable="true" filterMatchMode="equals">
+        <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="dir" header="Direccion" sortable></Column>
+        <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="tel" header="Telefono" sortable></Column>
+        <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="tipoEstablecimiento" header="Categoria" :sortable="true" filterMatchMode="equals">
           <template #body="slotProps">
             <span :class="'customer-badge tipoEstablecimiento-' + slotProps.data.tipoEstablecimiento">{{slotProps.data.tipoEstablecimiento}}</span>
           </template>
@@ -46,12 +46,12 @@
             </Dropdown>
           </template>
         </Column>
-        <Column field="cupoMax" header="Cupo Disponible" sortable>
+        <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="cupoMax" header="Cupo Disponible" sortable>
           <template #body="slotProps">
             <ProgressBar :value="slotProps.data.cupoMax" :showValue="false" style=" height:10px;"/>
           </template>
         </Column>
-        <Column>
+        <Column headerStyle="background-color: #343a40;">
             <template #body="slotProps">  
               <Button type="button" label="Hacer Reserva" @click="toggle(slotProps.data)" aria:haspopup="true" aria-controls="overlay_panel"/> 
               <OverlayPanel ref="op" appendTo="body" :showCloseIcon="true" id="overlay_panel" style="width: 450px">
@@ -78,7 +78,7 @@
         </div>
         <div class="Botones">
           <Button label="Mostrar aforo" class="p-button-raised p-button-success" style="position: relative; left:70%; width: 30%; transform: translateY(30%);"/>
-          <InputSwitch v-model="favoritos" style="position: relative; left:-30%; "/>
+          <InputSwitch v-model="favoritos" style="position: relative; left:-30%; " @click="AddFav" />
           <br>
           <h4 style="position: relative; font-family: Orbitron; font-size: 20px;">Favoritos</h4>
           <br>        
@@ -100,11 +100,11 @@
             <br>
         </div>
             <h5>Flujo de Personas:</h5>
-            <Chart type="bar" :data="basicData" />
+            <Chart type="bar" :data="basicData" /> float(latitud)
             <br>
         <div class="Mapa">
           <h5>Mapa:</h5>
-          <GoogleMap style="position: relative;" :latitude= 4.636236781881298 :longitude= -74.07929296709305 />
+           <GoogleMap style="position: relative;" :latitude= parseFloat(establecimiento.latitud) :longitude= parseFloat(establecimiento.longitud) />
         </div>
       </Dialog>
     </div>
@@ -126,7 +126,10 @@
 import GoogleMap from "./GoogleMap";
 import axios from "axios";
 import image from "../img/restaurante.jpg"
+import {getAuthenticationToken} from '@/dataStorage';
 const path = "Establecimientos"
+const path2 = "cliente/establecimientos/favoritos?access_token="
+const path3 = "persona?access_token=" + getAuthenticationToken() ;
 
 export default {
   name: 'search',
@@ -135,9 +138,10 @@ export default {
   },
   data(){
     return{
+            account: null,
             selectedhour: null,
             establecimientos: null,
-            favoritos: false,
+            favoritos: true,
             aforo: 20,
             estDialog: false,
             bookingDialog: false,
@@ -176,10 +180,10 @@ export default {
                   data: [59, 63, 69, 75, 80, 100, 99, 70]
                 },
               ]
-            },
+            }, 
             items: [
                 {
-                    label: "Home",
+                    label: "HOME",
                     icon:'pi pi-home',
                     to: "/home"
                 }
@@ -206,8 +210,32 @@ export default {
   },
    mounted(){
         this.ShowEstablecimientos();
+        this.Prueba();
     },
   methods: {
+    Prueba() {
+       axios.get(this.$store.state.backURL + path3, {
+       })
+      .then(response => {
+        this.account = response.data;
+      })
+      .catch(err => {
+        alert(err);
+      })
+    },
+    AddFav() {
+      axios.post(this.$store.state.backURL + path2 + getAuthenticationToken(), {
+        userID: this.account.id,
+        estID: this.establecimiento.id
+      })
+      .then(response => {
+          console.log(response.data);
+          alert("Success");
+      })
+      .catch(err => {
+          alert(err);
+      })
+    },
     onLogout() {
       this.$store.dispatch("doLogout");
       this.$router.push("Welcome");

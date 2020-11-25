@@ -3,7 +3,7 @@
         <div class="Menu">
             <Menubar :model="items" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;">
                 <template #end>
-                    <Menubar :model="items1"/>
+                    <Menubar :model="items1" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;"/>
                 </template>
             </Menubar>
         </div>
@@ -119,13 +119,12 @@
                             <br>
                         <div class="Mapa">
                             <h5>Mapa:</h5>
-                            <GoogleMap style="position: relative;" :latitude= 4.636236781881298 :longitude= -74.07929296709305 />
+                            <GoogleMap style="position: relative;" :latitude= parseFloat(slotProps.data.latitud) :longitude= parseFloat(slotProps.data.longitud) />
                         </div>
                     </div>
                 </template>
             </DataTable>
         </div>
-        <h1 style="text-shadow: black 0px 0px 15px; opacity: 0.25; font-size: 120px; position: absolute; left: 50%; transform: translateX(-50%); bottom: 10px; font-family: Orbitron; font-weight: bold;">ALECTRION</h1>
     </div>
 </template>
 
