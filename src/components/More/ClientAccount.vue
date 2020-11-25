@@ -3,7 +3,7 @@
       <div class="Menu">
             <Menubar :model="items" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;">
                 <template #end>
-                    <Menubar :model="items1"/>
+                    <Menubar :model="items1" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;"/>
                 </template>
             </Menubar>
             
@@ -52,7 +52,6 @@
           </tbody>
         </table>
       </div>
-      <h1 style="text-shadow: black 0px 0px 15px; opacity: 0.25; font-size: 120px; position: absolute; left: 50%; transform: translateX(-50%); bottom: 10px; font-family: Orbitron; font-weight: bold;">ALECTRION</h1>
     </div>
 </template>
 
@@ -88,7 +87,7 @@ export default {
                     icon:'pi pi-fw pi-user',
                     items:[
                         {
-                            label: 'Cerrar Sesion',
+                            label: 'Cerrar Sesión',
                             icon:'pi pi-fw pi-power-off',
                             to: '/login'
                         }

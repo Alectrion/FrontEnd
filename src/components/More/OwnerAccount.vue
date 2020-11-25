@@ -3,7 +3,7 @@
         <div class="Menu">
             <Menubar :model="items" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;">
                 <template #end>
-                    <Menubar :model="items1"/>
+                    <Menubar :model="items1" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;"/>
                 </template>
             </Menubar>
 
@@ -25,6 +25,17 @@
                 <br />
                 <span class="p-float-label">
                     <InputText id="cupo" type="text"  v-model="data.cupo" placeholder="Cupo"/>
+                    <label for="cupo"></label>
+                </span>
+                <br />
+                <h5>Ingresar Ubicacion: </h5>
+                <span class="p-float-label">
+                    <InputText id="cupo" type="text"  v-model="data.latitud" placeholder="Latitud"/>
+                    <label for="cupo"></label>
+                </span>
+                <br />
+                <span class="p-float-label">
+                    <InputText id="cupo" type="text"  v-model="data.longitud" placeholder="Longitud"/>
                     <label for="cupo"></label>
                 </span>
                 <br />
@@ -62,6 +73,17 @@
                     <br />
                     <span class="p-float-label">
                         <InputText id="cupo" type="text" required v-model="selectedEstablecimiento.cupoMax" placeholder="Cupo"/>
+                        <label for="cupo"></label>
+                    </span>
+                    <br />
+                    <h5>Ingresar Ubicacion: </h5>
+                    <span class="p-float-label">
+                        <InputText id="cupo" type="text"  v-model="selectedEstablecimiento.latitud" placeholder="Latitud"/>
+                        <label for="cupo"></label>
+                    </span>
+                    <br />
+                    <span class="p-float-label">
+                        <InputText id="cupo" type="text"  v-model="selectedEstablecimiento.longitud" placeholder="Longitud"/>
                         <label for="cupo"></label>
                     </span>
                     <br />
@@ -128,7 +150,9 @@
             </tbody>
             </table>
         </div>
-        <br><br><br><br><br>
+        <br>
+        <Menubar :model="items2" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;"></Menubar>
+        <br> 
         <h1 style="text-align: center; font-family: Orbitron; font-weight: bold;">MIS ESTABLECIMIENTOS</h1>
 
 <!--Tabla Establecimientos-->           
@@ -139,7 +163,6 @@
                 <Column headerStyle="color: white; font-family: Orbitron; background-color: #343a40" field="estName" header="NOMBRE"></Column>
             </DataTable>
         </div>
-        <h1 style="text-shadow: black 0px 0px 15px; opacity: 0.25; font-size: 120px; position: absolute; left: 50%; transform: translateX(-50%); bottom: 10px; font-family: Orbitron; font-weight: bold;">ALECTRION</h1>
     </div>
 </template>
 
@@ -151,9 +174,6 @@ const path = "propietario/establecimiento"
 const path2 = "usuario/editar/";
 const path3 = "persona?access_token=" + getAuthenticationToken() ;
 const path4 = "propietario/nuevo_establecimiento?access_token=" + getAuthenticationToken();
-
-
-
 
 export default {
     name: "HomeOwner",
@@ -185,6 +205,21 @@ export default {
                     icon:'pi pi-home',
                     to: "/home"
                 },
+            ],
+            items1: [
+                {
+                    label: "Mi Cuenta",
+                    icon:'pi pi-fw pi-user',
+                    items:[
+                        {
+                            label: 'Cerrar Sesión',
+                            icon:'pi pi-fw pi-power-off',
+                            to: '/login'
+                        }
+                    ]
+                },
+            ],
+            items2: [
                 {
                     label: 'AGREGAR',
                     icon:'pi pi-fw pi-plus',
@@ -205,19 +240,6 @@ export default {
                     command: () => {
                         this.Borrar();
                     }
-                },
-            ],
-            items1: [
-                {
-                    label: "Mi Cuenta",
-                    icon:'pi pi-fw pi-user',
-                    items:[
-                        {
-                            label: 'Cerrar Sesión',
-                            icon:'pi pi-fw pi-power-off',
-                            to: '/login'
-                        }
-                    ]
                 },
             ],
         };
@@ -246,7 +268,9 @@ export default {
                 tel: this.data.telefono,
                 cupoMax: this.data.cupo,
                 tipoEstablecimiento: this.data.categoria,
-                muro: this.data.muro
+                muro: this.data.muro,
+                latitud: this.data.latitud,
+                longitud: this.data.longitud
             })
             .then(response => {
                 console.log(response.data);
@@ -274,7 +298,9 @@ export default {
                 tel: this.selectedEstablecimiento.tel,
                 cupoMax: this.selectedEstablecimiento.cupoMax,
                 tipoEstablecimiento: this.selectedEstablecimiento.tipoEstablecimiento,
-                muro: this.selectedEstablecimiento.muro
+                muro: this.selectedEstablecimiento.muro,
+                latitud: this.selectedEstablecimiento.latitud,
+                longitud: this.selectedEstablecimiento.longitud
             })
             .then(response => {
                 this.establecimientos = response.data;
