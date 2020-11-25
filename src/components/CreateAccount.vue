@@ -115,7 +115,7 @@ p {
 }
 label {
   position: relative;
-  top: 25px;
+  top: 30px;
   color: white;
   text-shadow: #a945c7 0px 0px 5px;
   font-family: Consolas;
@@ -123,7 +123,7 @@ label {
 }
 input {
   position: relative;
-  top: 5%;
+  top: 25px;
   width: 75%;
   padding: 5px 5px;
   border: 1px solid #a945c7;
