@@ -52,10 +52,15 @@
           </template>
         </Column>
         <Column>
-            <template #body="slotProps">
-                
-<Button label="Hacer Reserva" @click="showbookingDialog(slotProps.data)"/>
-            </template>
+            <template #body="slotProps">  
+              <Button type="button" label="Hacer Reserva" @click="toggle(slotProps.data)" aria:haspopup="true" aria-controls="overlay_panel"/> 
+              <OverlayPanel ref="op" appendTo="body" :showCloseIcon="true" id="overlay_panel" style="width: 450px">
+                <DataTable :value="hours" :selection.sync="selectedhour" selectionMode="single" :paginator="true" :rows="5" @row-select="onProductSelect">
+                  <h3 style=" font-family: Orbitron;">{{establecimiento.estName}}</h3>
+                    <Column field="name" header="Hora" sortable></Column>
+                </DataTable>
+            </OverlayPanel>
+            </template>   
         </Column>
         <template #empty>
             No se encontraron establecimientos.
@@ -90,8 +95,8 @@
           </div>
         </div>
         <div class="p-field">
-            <h5>Descripcion:</h5>
-            <Textarea id="description" v-model="establecimiento.dir" required="true" rows="3" cols="20" disabled />
+            <h5>Muro:</h5>
+            <Textarea id="description" v-model="establecimiento.muro" required="true" rows="3" cols="20" disabled />
             <br>
         </div>
             <h5>Flujo de Personas:</h5>
@@ -141,7 +146,6 @@ export default {
             filters: {},
             filters1: {},
             submitted: false,
-            city: 'true',
             image: image,
             hours: [
                 {name: '7am - 8am', code: '7'},
@@ -233,6 +237,14 @@ export default {
     closebookingDialog() {
       this.bookingDialog = false;
     },
+    toggle(establecimiento, event ) {
+      this.establecimiento = {...establecimiento};
+      this.$refs.op.toggle(event);
+    },
+    onProductSelect(event) {
+        this.$refs.op.hide();
+        this.$toast.add({severity:'info', summary: 'Hora Seleccionada', detail: event.data.estName, life: 3000});
+    }
   },
 }
 </script>

@@ -7,27 +7,26 @@
                 </template>
             </Menubar>
     </div>
+    
     <div class="Establecimientos">
-      <OrderList v-model="establecimientos" listStyle="height:auto" dataKey="id">
+      <OrderList v-model="establecimientos"  dataKey="id">
           <template #header>
-              List of Products
+              Favoritos
           </template>
-          <template #body="slotProps">
+          <template #item="slotProps">
               <div class="product-item">
                   <div class="product-list-detail">
-                      <h5 class="p-mb-2">{{slotProps.data.estName}}</h5>
-                      <i class="pi pi-tag product-category-icon"></i>
-                      <span class="product-category">{{slotProps.data.tipoEstablecimiento}}</span>
+                    <h5 class="p-mb-2 ">{{slotProps.item.estName}}</h5>
+                    <h6 class="p-mb-2">{{slotProps.item.tipoEstablecimiento}}</h6>
+                    <span class="product-category">{{slotProps.item.dir}}</span>
                   </div>
                   <div class="product-list-action">
-                      <h6 class="p-mb-2">${{slotProps.data.dir}}</h6>
-                      <span :class="'product-badge status-'+slotProps.data.dir.toLowerCase()">{{slotProps.data.dir}}</span>
+                      <span :class="'product-badge status-'+slotProps.item.tipoEstablecimiento.toLowerCase()">{{slotProps.item.tel}}</span>
                   </div>
               </div>
           </template>
       </OrderList>
-    </div>
-      
+    </div>      
   </div>
 </template>
 

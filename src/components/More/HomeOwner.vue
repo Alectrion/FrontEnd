@@ -27,7 +27,12 @@
                 </span>
                 <br />
                 <span class="p-float-label">
-                    <InputText id="categoria" type="text" v-model="data.categoria" placeholder="Categoria"  />
+                    <Textarea id="description" v-model="data.muro" required="true" rows="3" cols="25" placeholder="Descripción" />
+                    <label for="Descripción"></label>
+                </span>
+                <br />
+                <span class="p-float-label">
+                    <Dropdown v-model="data.categoria" :options="categorias" optionLabel="name" placeholder="Seleccionar Categoria" />
                     <label for="categoria"></label>
                 </span>
                 <template #footer>
@@ -57,7 +62,12 @@
                     </span>
                     <br />
                     <span class="p-float-label">
-                        <InputText id="categoria" type="text" required v-model="selectedEstablecimiento.tipoEstablecimiento" placeholder="Categoria"  />
+                        <Textarea id="description" v-model="selectedEstablecimiento.muro" required="true" rows="3" cols="25" placeholder="Descripción" />
+                        <label for="Descripción"></label>
+                    </span>
+                    <br />
+                    <span class="p-float-label">
+                        <Dropdown v-model="selectedEstablecimiento.tipoEstablecimiento" :options="categorias" placeholder="Seleccionar Categoria" />
                         <label for="categoria"></label>
                     </span>
                     <template #footer>
@@ -102,18 +112,22 @@ export default {
     data() {
 		return {
             establecimientos: null,
+            establecimiento: {},
+            selectedEstablecimiento: {},
             displayModal: false,
             editModal: false,
-            establishment: {},
-            selectedEstablecimiento: {},
             data: {
                 id: null,
                 nombre: null,
                 direccion: null,
                 telefono: null,
                 cupo: null,
-                categoria: null
+                categoria: null,
+                muro:null
             },
+            categorias: [
+                'Restaurante', 'Gimnasio', 'Supermercado', 'Barberia', 'Motel'
+            ],
 			items: [
                 {
                     label: "Home",
@@ -121,7 +135,7 @@ export default {
                     to: "/home"
                 },
                 {
-                    label: 'Agregar',
+                    label: 'Agregar Establecimiento',
                     icon:'pi pi-fw pi-plus',
                     command: () => {
                     this.showSaveModal();
@@ -174,7 +188,8 @@ export default {
                 dir: this.data.direccion,
                 tel: this.data.telefono,
                 cupoMax: this.data.cupo,
-                tipoEstablecimiento: this.data.categoria
+                tipoEstablecimiento: this.data.categoria,
+                muro: this.data.muro
             })
             .then(response => {
               console.log(response.data);
@@ -201,7 +216,8 @@ export default {
                 dir: this.selectedEstablecimiento.dir,
                 tel: this.selectedEstablecimiento.tel,
                 cupoMax: this.selectedEstablecimiento.cupoMax,
-                tipoEstablecimiento: this.selectedEstablecimiento.tipoEstablecimiento
+                tipoEstablecimiento: this.selectedEstablecimiento.tipoEstablecimiento,
+                muro: this.selectedEstablecimiento.muro
             })
             .then(response => {
                 this.establecimientos = response.data;

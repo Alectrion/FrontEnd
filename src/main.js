@@ -25,6 +25,9 @@ import InputSwitch from 'primevue/inputswitch';
 import Textarea from 'primevue/textarea';
 import RadioButton from 'primevue/radiobutton';
 import OrderList from 'primevue/orderlist';
+import OverlayPanel from 'primevue/overlaypanel';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
 import * as VueGoogleMaps from "vue2-google-maps";
 
 
@@ -43,6 +46,9 @@ Vue.component('InputSwitch', InputSwitch);
 Vue.component('Textarea', Textarea);
 Vue.component('RadioButton', RadioButton);
 Vue.component('OrderList', OrderList);
+Vue.component('OverlayPanel', OverlayPanel);
+Vue.component('TabView', TabView);
+Vue.component('TabPanel ', TabPanel );
 Vue.component('Dataview', DataView);
 
 
