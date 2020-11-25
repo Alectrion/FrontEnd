@@ -6,6 +6,7 @@
                     <Menubar :model="items1"/>
                 </template>
             </Menubar>
+        </div>
             <Dialog header="Nuevo Establecimiento" footer="Footer" :visible.sync="displayModal" :modal="true" >
                 <span class="p-float-label">
                     <InputText id="nombre" type="text" v-model="data.nombre" placeholder="Nombre Establecimiento" autocomplete="off"/>
@@ -76,20 +77,52 @@
                     </template>
                 </Dialog>
             </div>
-        </div>
         <div class="Datos">
-            <DataTable :value="establecimientos" :paginator="true" :selection.sync="selectedEstablecimiento" selectionMode="single" dataKey="id" :rows="8">
-                <Column headerStyle="width: 5rem" field="id" header="Codigo"></Column>
-                <Column headerStyle="width: 5rem">
-                    <template #body="slotProps">
-                        <Button icon="pi pi-eye"  @click="showEstDialog(slotProps.data)" />
-                    </template>
-                </Column>
-                <Column field="estName" header="Nombre Establecimiento"></Column>
-                <Column field="dir" header="Direccion"></Column>
-                <Column field="tel" header="Telefono"></Column>
-                <Column field="tipoEstablecimiento" header="Categoria"></Column>
-                <Column field="cupoMax" header="Cupo "></Column>
+            <DataTable :value="establecimientos" :expandedRows.sync="expandedRows" dataKey="id" :paginator="true" :rows="1"
+                @row-expand="onRowExpand" @row-collapse="onRowCollapse">
+                <Column :expander="true" headerStyle="width: 3rem" />
+                <Column field="estName" header="Nombre Establecimiento" sortable></Column>
+                <Column field="dir" header="Direccion" sortable></Column>
+                <Column field="tel" header="Telefono" sortable></Column>
+                <Column field="tipoEstablecimiento" header="Categoria" sortable></Column>
+                <Column field="cupoMax" header="Cupo Maximo" sortable></Column>
+                <template #expansion="slotProps">
+                    <div class="orders-subtable">
+                        <div class="p-field" style="text-align: center; font-family: Orbitron; color:#455eff; height: 52px;">
+                            <h2>{{slotProps.data.estName}}</h2>
+                        </div >
+                        <div style="position:relative; height: 32px;">
+                            <h5>Personas actualmente: 20</h5>
+                        </div>
+                        <div class="Botones">
+                            <Button label="Mostrar aforo" class="p-button-raised p-button-success" style="position: relative; left:70%; width: 30%; transform: translateY(30%);"/>
+                            <br>     
+                        </div>
+                        <div style="position: relative; height: 47px;">
+                            <h5>Categoria:</h5>
+                            <RadioButton inputId="tipoEstablecimiento" name="categoria" :value="slotProps.data.tipoEstablecimiento" v-model="slotProps.data.tipoEstablecimiento" style="position: relative; left:8%; transform: translateY(-215%);"/>
+                            <label for="tipoEstablecimiento" style="position: relative; font-size: 18px; font-weight: 499; left:8%; transform: translateY(-120%);">{{ slotProps.data.tipoEstablecimiento}} </label>
+                        </div>
+                        <div class="Detalles" style="position: relative; height: 83px;">
+                            <h5>Dirección:</h5><p>{{slotProps.data.dir}}</p>
+                            <div class="tel" style="position: relative; left: 65%; width: 20%; transform: translateY(-130%);">
+                                <h5 id="Telef">Telefono:</h5><p>{{slotProps.data.tel}}</p>
+                            </div>
+                        </div>
+                        <div class="p-field">
+                            <h5>Muro:</h5>
+                            <Textarea v-model="slotProps.data.muro" :autoResize="true" rows="5" cols="30" />
+                            <br>
+                        </div>
+                            <h5>Flujo de Personas:</h5>
+                            <Chart type="bar" :data="basicData" />
+                            <br>
+                        <div class="Mapa">
+                            <h5>Mapa:</h5>
+                            <GoogleMap style="position: relative;" :latitude= 4.636236781881298 :longitude= -74.07929296709305 />
+                        </div>
+                    </div>
+                </template>
             </DataTable>
         </div>
     </div>
@@ -97,6 +130,7 @@
 </template>
 
 <script>
+import GoogleMap from "./GoogleMap";
 import axios from "axios";
 import {getAuthenticationToken} from '@/dataStorage';
 
@@ -108,7 +142,9 @@ const path2 = "propietario/nuevo_establecimiento?access_token=" + getAuthenticat
 
 export default {
     name: "HomeOwner",
-
+    components: {
+        GoogleMap
+    },
     data() {
 		return {
             establecimientos: null,
@@ -116,6 +152,8 @@ export default {
             selectedEstablecimiento: {},
             displayModal: false,
             editModal: false,
+            favoritos: false,
+            expandedRows: [],
             data: {
                 id: null,
                 nombre: null,
@@ -128,6 +166,16 @@ export default {
             categorias: [
                 'Restaurante', 'Gimnasio', 'Supermercado', 'Barberia', 'Motel'
             ],
+            basicData: {
+              labels: ['7-9', '9-11', '11-1', '1-3', '3-5', '5-7', '7-9','9-11'],
+              datasets: [
+                {
+                  label: 'Personas',
+                  backgroundColor: '#458fff',
+                  data: [59, 63, 69, 75, 80, 100, 99, 70]
+                },
+              ]
+            },
 			items: [
                 {
                     label: "Home",
@@ -135,25 +183,9 @@ export default {
                     to: "/home"
                 },
                 {
-                    label: 'Agregar Establecimiento',
-                    icon:'pi pi-fw pi-plus',
-                    command: () => {
-                    this.showSaveModal();
-                    }
-                },
-                {
-                    label: 'Editar',
-                    icon:'pi pi-fw pi-pencil',
-                    command: () => {
-                    this.showEditModal();
-                    }
-                },
-                {
-                    label: 'Borrar',
-                    icon:'pi pi-fw pi-trash',
-                    command: () => {
-                        this.Borrar();
-                    }
+                    label: "Mis establecimientos",
+                    icon:'pi pi-table',
+                    to: '/tabmenu/mis-establecimientos'
                 },
             ],
             items1: [
@@ -245,7 +277,24 @@ export default {
         closeModal() {
             this.displayModal = false;
             this.editModal = false;
-        }
+        },
+        onRowExpand(establecimiento,event) {
+            this.establecimiento = {...establecimiento};
+            this.$toast.add({severity: 'info', summary: 'Product Expanded', detail: event.data.estName, life: 3000});
+        },
+        onRowCollapse(establecimiento,event) {
+            this.establecimiento = {...establecimiento};
+            this.$toast.add({severity: 'success', summary: 'Product Collapsed', detail: event.data.estName, life: 3000});
+        },
+        expandAll(establecimiento) {
+            this.establecimiento = {...establecimiento};
+            this.expandedRows = this.establecimientos.filter(p => p.id);
+            this.$toast.add({severity: 'success', summary: 'All Rows Expanded', life: 3000});
+        },
+        collapseAll() {
+            this.expandedRows = null;
+            this.$toast.add({severity: 'success', summary: 'All Rows Collapsed', life: 3000});
+        },
     }
 };
 </script>

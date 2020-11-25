@@ -28,6 +28,7 @@ import OrderList from 'primevue/orderlist';
 import OverlayPanel from 'primevue/overlaypanel';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
+import TabMenu from 'primevue/tabmenu';
 import * as VueGoogleMaps from "vue2-google-maps";
 
 
@@ -48,7 +49,8 @@ Vue.component('RadioButton', RadioButton);
 Vue.component('OrderList', OrderList);
 Vue.component('OverlayPanel', OverlayPanel);
 Vue.component('TabView', TabView);
-Vue.component('TabPanel ', TabPanel );
+Vue.component('TabPanel', TabPanel );
+Vue.component('TabMenu', TabMenu);
 Vue.component('Dataview', DataView);
 
 

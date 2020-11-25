@@ -117,13 +117,6 @@ export default {
                 {
                     label: "Usuario",
                 },
-                {
-                    label: 'Editar',
-                    icon:'pi pi-fw pi-pencil',
-                    command: () => {
-                    this.showSaveModal();
-                    }
-                },
             ],
             items1: [
                 {
