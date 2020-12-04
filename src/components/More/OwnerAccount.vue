@@ -127,6 +127,17 @@
             </template>
         </Dialog>
 
+        <Dialog header="Dar de baja a mi cuenta" :visible.sync="displayConfirmation" :style="{width: '350px'}" :modal="true">
+              <div class="confirmation-content">
+                  <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
+                  <span>¿Estas seguro de eliminar tu cuenta?</span>
+              </div>
+              <template #footer>
+                <Button label="Si, adios." icon="pi pi-check" @click="BorrarCuenta" class="p-button-text" autofocus />
+                <Button label="No" icon="pi pi-times" @click="closeConfirmation" class="p-button-text"/>
+              </template>
+        </Dialog>
+
 <!--Tabla Cuenta-->  
         <div class="datos">
             <table class="table table-hover">
@@ -146,6 +157,7 @@
                 <td v-text="account.names"></td>
                 <td v-text="account.email"></td>
                 <Button label="EDITAR" style="font-family: Orbitron; background-color: #883cae; border-color: #3d0c421a;" class="p-button-rounded p-button-info" icon="pi pi-pencil" @click="showEditAccount"/>
+                <Button class="p-button-rounded p-button-danger" icon="pi pi-trash" @click="openConfirmation"/>
                 </tr>
             </tbody>
             </table>
@@ -172,6 +184,7 @@ const path = "propietario/establecimiento"
 const path2 = "usuario/editar/";
 const path3 = "persona?access_token=" + getAuthenticationToken() ;
 const path4 = "propietario/nuevo_establecimiento?access_token=" + getAuthenticationToken();
+const path5 = "usuario/delete/"
 
 
 
@@ -187,6 +200,7 @@ export default {
             displayEdit: false,
             displayModal: false,
             editModal: false,
+            displayConfirmation: false,
             data: {
                 id: null,
                 nombre: null,
@@ -329,6 +343,16 @@ export default {
             alert(error);
             });
         },
+        BorrarCuenta(){
+        axios.delete(this.$store.state.backURL + path5 + this.account.id + "?access_token=" + getAuthenticationToken(), {data: {foo: 'bar'}
+                })
+                .then(response => {
+                    location.reload();
+                    console.log(response);
+                    alert("Usuario borrado");
+                    this.$router.push("/welcome");
+                })  
+        },
         Borrar() {
             axios.delete(this.$store.state.backURL + path + "/" + this.selectedEstablecimiento.id + "?access_token=" + getAuthenticationToken(), {data: {foo: 'bar'}
             })
@@ -351,6 +375,12 @@ export default {
             this.displayEdit = false;
             this.displayModal = false;
             this.editModal = false;
+        },
+        openConfirmation() {
+            this.displayConfirmation = true;
+        },
+        closeConfirmation() {
+            this.displayConfirmation = false;
         }
     }
 };

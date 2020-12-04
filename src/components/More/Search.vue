@@ -1,22 +1,44 @@
 <template>
   <div class="User">
+    <Toast position="top-left"/>
     <div class="Menu">
-            <Menubar :model="items">
-                <template #end>
-                    <Menubar :model="items1"/>
-                </template>
-            </Menubar>
+      <br>
+      <nav class="navbar navbar-expand-lg navbar-dark ">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <h4 class="nav-link"><router-link to='/home' style="color: white; text-decoration: none" title='Home'> Home</router-link></h4>
+            </li>
+          </ul>
+          <ul class="navbar-nav ml-md-auto">
+            <li class="nav-item dropdown" >
+              <h4 class="nav-link dropdown-toggle dropdown-toggle-split" id="navbarDropdown" role="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:white">
+              <router-link to='' style="color: white; text-decoration: none" title='usuario'>  Usuario </router-link>
+              </h4>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+               <h5 class="dropdown-item"><router-link to='/myaccount' style="color: black; text-decoration: none" title='myaccount'>Mi Cuenta</router-link></h5>
+                <div class="dropdown-divider"></div>
+                <h5 class="dropdown-item"><router-link to='/welcome' style="color: black; text-decoration: none" title='Logout'>Cerrar Sesion</router-link></h5>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
     </div>
     <div class="Establecimientos">
-      <DataTable ref="dt" :value="establecimientos" :selection.sync="selectedEstablecimiento" dataKey="id"
-        :paginator="true" :rows="10" :filters="filters"
+      <DataTable ref="dt" :value="establecimientos" :selection.sync="selectedEstablecimiento" dataKey="id" 
+        :paginator="true" :rows="4" :filters="filters" 
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[5,10,25]"
-        currentPageReportTemplate="Resultados de {first} a {last} de {totalRecords} establecimientos">
+        currentPageReportTemplate="Resultados de {first} a {last} de {totalRecords} establecimientos" style="border-radius: 30px;">
         <template #header>
           <div class="table-header" style="position:relative; left:23%; width:30%;">
             <span class="p-input-icon-left">
-              <i class="pi pi-search" />
-              <InputText v-model="filters['global']" placeholder="Buscador de Establecimientos" style="width:300%; border: 2px solid purple;"  />
+              <i class="pi pi-search" style="color:#883cae "/>
+              <InputText v-model="filters['global']" placeholder="Buscador de Establecimientos" style="width:300%; color:#883cae; border: 2px solid #883cae;"  />
             </span>
           </div>
           <br>
@@ -24,7 +46,7 @@
         <Column selectionMode="multiple" headerStyle="width: 4rem"></Column>
         <Column headerStyle="width: 5rem">
           <template #body="slotProps">
-              <Button icon="pi pi-eye"  @click="showEstDialog(slotProps.data)" />
+              <Button icon="pi pi-eye"  @click="showEstDialog(slotProps.data),ActFav(slotProps.data.id)" />
           </template>
         </Column>
         <Column field="estName" header="Establecimiento" :sortable="true" >
@@ -32,7 +54,7 @@
             <InputText type="text" v-model="filters['estName']" class="p-column-filter" placeholder="Buscar por nombre" />
           </template>
         </Column>
-        <Column field="dir" header="Direccion" sortable></Column>
+        <Column field="id" header="Direccion" sortable></Column>
         <Column field="tel" header="Telefono" sortable></Column>
         <Column field="tipoEstablecimiento" header="Categoria" :sortable="true" filterMatchMode="equals">
           <template #body="slotProps">
@@ -53,13 +75,7 @@
         </Column>
         <Column>
             <template #body="slotProps">  
-              <Button type="button" label="Hacer Reserva" @click="toggle(slotProps.data)" aria:haspopup="true" aria-controls="overlay_panel"/> 
-              <OverlayPanel ref="op" appendTo="body" :showCloseIcon="true" id="overlay_panel" style="width: 450px">
-                <DataTable :value="hours" :selection.sync="selectedhour" selectionMode="single" :paginator="true" :rows="5" @row-select="onProductSelect">
-                  <h3 style=" font-family: Orbitron;">{{establecimiento.estName}}</h3>
-                    <Column field="name" header="Hora" sortable></Column>
-                </DataTable>
-            </OverlayPanel>
+              <Button type="button" label="Hacer Reserva" @click="showbookingDialog(slotProps.data)" aria:haspopup="true" aria-controls="overlay_panel"/> 
             </template>   
         </Column>
         <template #empty>
@@ -78,9 +94,9 @@
         </div>
         <div class="Botones">
           <Button label="Mostrar aforo" class="p-button-raised p-button-success" style="position: relative; left:70%; width: 30%; transform: translateY(30%);"/>
-          <InputSwitch v-model="favoritos" style="position: relative; left:-30%; "/>
+          <InputSwitch v-model="favorite" style="position: relative; left:-30%; " @click="AddFav(favorite)" />
           <br>
-          <h4 style="position: relative; font-family: Orbitron; font-size: 20px;">Favoritos</h4>
+          <h3 style="position: relative; font-family: Orbitron; font-size: 20px;">Favoritos</h3>
           <br>        
         </div>
         <div style="position: relative; height: 47px;">
@@ -108,13 +124,18 @@
         </div>
       </Dialog>
     </div>
-    <div class="Reserva" style="position: relative; width: 20%; height: 100%" >
-      <Dialog :visible.sync="bookingDialog" :style="{width: '50vw'}" :header = "establecimiento.estName" :modal="true" class="p-fluid">
-        <h4>Reserva</h4>
-        <Dropdown v-model="selectedhour" :options="hours" optionLabel="name" placeholder="Seleccione un horario" :editable="true" />
-        <img :src="image" class="product-image" style="position:relative; width: 200px; left: 25%;"/>
+    <div class="Reserva" >
+      <Dialog  footer="Footer" :style="{width: '40vw'}" position="right" :visible.sync="bookingDialog" :modal="true">
+        <template #header>
+          <br>
+          <h2 style="color: #883cae; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">{{establecimiento.estName}}</h2>
+        </template>
+          <DataTable :value="hours" :selection.sync="selectedhour" selectionMode="single" :paginator="true" dataKey="name" :rows="4">
+            <h3 style="color: #883cae; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Reserva</h3>
+            <Column field="name" header="Hora" sortable></Column>
+          </DataTable>
         <template #footer>
-          <Button label="Guardar" icon="pi pi-check" />
+          <Button label="Reservar" icon="pi pi-check" @click="Reservar()" />
           <Button label="Cancelar" icon="pi pi-times" @click="closebookingDialog()" class="p-button-secondary" />
         </template>
       </Dialog>
@@ -125,8 +146,15 @@
 <script>
 import GoogleMap from "./GoogleMap";
 import axios from "axios";
-import image from "../img/restaurante.jpg"
+import {getAuthenticationToken} from '@/dataStorage';
+
 const path = "Establecimientos"
+const path2 = "persona?access_token=" + getAuthenticationToken() ;
+const path3 = "cliente/establecimientos/reservas?access_token="
+const path4 = "cliente/establecimientos/favoritos?access_token="
+const path5 = "cliente/establecimientos/misfavoritos/"
+const path6 = "cliente/establecimientos/favoritos?access_token=" + getAuthenticationToken() ;
+const access = "?access_token="
 
 export default {
   name: 'search',
@@ -135,34 +163,35 @@ export default {
   },
   data(){
     return{
-            selectedhour: null,
+            account: null,
             establecimientos: null,
-            favoritos: false,
+            establecimiento: {},
+            favoriteslist: null,
+            favorite: false,
             aforo: 20,
             estDialog: false,
             bookingDialog: false,
-            establecimiento: {},
+            selectedhour: null,
             selectedEstablecimiento: null,
             filters: {},
             filters1: {},
             submitted: false,
-            image: image,
             hours: [
-                {name: '7am - 8am', code: '7'},
-                {name: '8am - 9am', code: '8'},
-                {name: '9am - 10am', code: '9'},
-                {name: '10am - 11am', code: '10'},
-                {name: '11am - 12pm', code: '11'},
-                {name: '12pm - 1pm', code: '12'},
-                {name: '1pm - 2pm', code: '13'},
-                {name: '2pm - 3pm', code: '14'},
-                {name: '3pm - 4pm', code: '15'},
-                {name: '4pm - 5pm', code: '16'},
-                {name: '5pm - 6pm', code: '17'},
-                {name: '6pm - 7pm', code: '18'},
-                {name: '7pm - 8pm', code: '19'},
-                {name: '8pm - 9pm', code: '20'},
-                {name: '9pm - 10pm', code: '21'}
+                {name: '7am - 8am'},
+                {name: '8am - 9am'},
+                {name: '9am - 10am'},
+                {name: '10am - 11am'},
+                {name: '11am - 12pm'},
+                {name: '12pm - 1pm'},
+                {name: '1pm - 2pm'},
+                {name: '2pm - 3pm'},
+                {name: '3pm - 4pm'},
+                {name: '4pm - 5pm'},
+                {name: '5pm - 6pm'},
+                {name: '6pm - 7pm'},
+                {name: '7pm - 8pm'},
+                {name: '8pm - 9pm'},
+                {name: '9pm - 10pm' }
             ],
             tipoEstablecimiento: [
                 'Restaurante', 'Gimnasio', 'Supermercado', 'Barberia', 'Motel'
@@ -205,13 +234,10 @@ export default {
         }
   },
    mounted(){
-        this.ShowEstablecimientos();
-    },
+    this.ShowEstablecimientos();
+    this.Persona();
+  },
   methods: {
-    onLogout() {
-      this.$store.dispatch("doLogout");
-      this.$router.push("Welcome");
-    },
     ShowEstablecimientos() {
       axios.get(this.$store.state.backURL + path, {
       })
@@ -222,6 +248,85 @@ export default {
       .catch(err => {
           alert(err);
       })
+    },
+    Persona() {
+       axios.get(this.$store.state.backURL + path2, {
+       })
+      .then(response => {
+        this.account = response.data;
+        this.Favorites();
+      })
+      .catch(err => {
+        alert(err);
+      })
+    },
+    Reservar() {
+      axios.post(this.$store.state.backURL + path3 + getAuthenticationToken(), {
+        userID: this.account.id,
+        estID: this.establecimiento.id,
+        horario: this.selectedhour.name
+      })
+      .then(response => {
+          console.log(response.data);
+          this.$toast.add({severity:'success', summary: 'Reserva Exitosa!', detail:'Se agrego correctamente la reserva de ' 
+          + this.establecimiento.estName  + '\n' + ' A las: ' + this.selectedhour.name ,  life: 4000});
+      })
+      .catch(err => {
+          alert(err);
+      })
+    },
+    Favorites() {
+       axios.get(this.$store.state.backURL + path5 + this.account.id + access + getAuthenticationToken(), {
+       })
+      .then(response => {
+        this.favoriteslist = response.data;
+      })
+      .catch(err => {
+        alert(err);
+      })
+    },
+    IsFavorite(idEst){
+      var isfavorite = false;
+      for (var i = 0; i < this.favoriteslist.length; i++){
+        if (this.favoriteslist[i].id==idEst){
+          isfavorite = true;
+        }
+      }
+      return isfavorite;
+    },
+    ActFav(idEst){
+      this.favorite = this.IsFavorite(idEst)
+    },
+    AddFav(fav) {
+      if(fav==false){
+          axios.post(this.$store.state.backURL + path4 + getAuthenticationToken(), {
+          userID: this.account.id,
+          estID: this.establecimiento.id
+        })
+        .then(response => {
+            console.log(response.data);
+            alert("Agregado");
+            location.reload();
+        })
+        .catch(err => {
+            alert(err);
+        })
+      }else{
+        axios.delete(this.$store.state.backURL + path6, { data: {
+          userID: this.account.id,
+          estID: this.establecimiento.id}, 
+        })
+        .then(response => {
+            console.log(response.data);
+            this.$toast.add({severity:'success', summary: 'Borrado de favoritos', detail:'',  life: 2000});
+            location.reload();
+        })
+        .catch(err => {
+            alert(err);
+            
+
+        })
+      }
     },
     showEstDialog(establecimiento) {
       this.establecimiento = {...establecimiento};
@@ -237,14 +342,6 @@ export default {
     closebookingDialog() {
       this.bookingDialog = false;
     },
-    toggle(establecimiento, event ) {
-      this.establecimiento = {...establecimiento};
-      this.$refs.op.toggle(event);
-    },
-    onProductSelect(event) {
-        this.$refs.op.hide();
-        this.$toast.add({severity:'info', summary: 'Hora Seleccionada', detail: event.data.estName, life: 3000});
-    }
   },
 }
 </script>
@@ -252,14 +349,25 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css?family=Orbitron');
 .User {
-    position: absolute;
-    background-color: #3d0c421a;
-    padding: 0px;
-    margin: 0%;
-    width: 100%;
-    height: 100%;
-    font-family: Orbitron;
+  position: relative;
+  background: url("../img/fondo.jpeg") no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-color: #3d0c421a;
+  color: white;
+  width: 100%;
+  height: 100%; 
     
 }
+.Menu {
+  position: relative;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color:white;
+}
+h4{
+  display: inline-block;
+  margin: 0 20px;
+}
+
 
 </style>
