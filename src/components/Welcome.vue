@@ -2,6 +2,8 @@
   <div class="Welcome">
     <section class="ALECTRION">
       <p>ALECTRION</p>
+      <br>
+      <br>
       <div class="Mensaje">¿A dónde quieres ir hoy?</div>
     </section>
 
@@ -36,7 +38,7 @@ export default {
 }
 p {
   font-family: Orbitron;
-  font-size: 200px;
+  font-size: 155px;
   font-weight: bold;
   color: white;
   text-shadow: #a945c7 0px 0px 30px;

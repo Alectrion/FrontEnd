@@ -31,7 +31,7 @@
     </div>
     <div class="Establecimientos">
       <DataTable ref="dt" :value="establecimientos" :selection.sync="selectedEstablecimiento" dataKey="id" 
-        :paginator="true" :rows="4" :filters="filters" 
+        :paginator="true" :rows="5" :filters="filters" 
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[5,10,25]"
         currentPageReportTemplate="Resultados de {first} a {last} de {totalRecords} establecimientos" style="border-radius: 30px;">
         <template #header>

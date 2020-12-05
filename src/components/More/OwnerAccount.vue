@@ -1,110 +1,190 @@
 <template>
-    <div class="Owner">
-        <div class="Menu">
-            <Menubar :model="items" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;">
-                <template #end>
-                    <Menubar :model="items1" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;"/>
-                </template>
-            </Menubar>
+  <div class="Owner">
+    <Toast position="top-left"/>
+    <div class="Menu">
+        <br>
+        <nav class="navbar navbar-expand-lg navbar-dark ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
 
-<!--Dialog Agregar Establecimiento-->
-            <Dialog header="Nuevo Establecimiento" footer="Footer" :visible.sync="displayModal" :modal="true" >
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                <h4 class="nav-link"><router-link to='/home' style="color: white; text-decoration: none" title='Home'> Home</router-link></h4>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-md-auto">
+                <li class="nav-item">
+                <h4 class="nav-link"><router-link to='/welcome' style="color: white; text-decoration: none" title='Home'> Cerrar Sesion</router-link></h4>
+                </li>
+            </ul>
+            </div>
+        </nav>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <br>
+        <br>
+            <li class="nav-item">
+            <h5 class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Mis Establecimientos</h5>
+            </li>
+            <li class="nav-item">
+            <h5 class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Mi Cuenta</h5>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+
+        <!--Tabla Establecimientos-->
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">           
+                <div class="Datos">
+                    <Carousel :value="establecimientos" :numVisible="1" :numScroll="1" :selection.sync="selectedEstablecimiento" dataKey="id"  
+                    :responsiveOptions="responsiveOptions" orientation="vertical" verticalViewPortHeight="352px" class="custom-carousel" 
+                    :circular="true" :autoplayInterval="3000" style="max-width: 400px; margin-top: 2em">
+
+                        <template #item="slotProps">
+                        <div class="product-item">
+                            <div class="product-item-content">
+                            <div class="p-mb-3">
+                                
+                            </div>
+                            <div>
+                                <h1 class="p-mb-1">{{slotProps.data.estName}}</h1>
+                                <h6 class="p-mt-0 p-mb-3">{{slotProps.data.dir}}</h6>
+                                <h6 class="p-mt-0 p-mb-3">Tel: {{slotProps.data.tel}}</h6>
+                                <span class="badge badge-pill badge-primary" style="font-size: 20px">{{slotProps.data.tipoEstablecimiento}}</span>
+                                <div class="car-buttons p-mt-5">  
+                                    <Button class="p-button-raised p-button-help" icon="pi pi-pencil" label="Editar" @click="showEditModal(slotProps.data)" style="background-color: #883cae;" />
+                                    <Button class="p-button-raised p-button-danger" icon="pi pi-trash" label="Eliminar" @click="openConfirmationEstablecimiento(slotProps.data)"/>
+                                </div> 
+                            </div>
+                            </div>
+                        </div>
+                        </template>
+                    </Carousel>
+                </div>
+            </div>
+
+        <!--Mi Cuenta-->  
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="datos" style="position: relative; max-width:35%; left: 32%;">
+                    <div class="card text-center" style="position:relative; ">
+                        <div class="card-header" style="color: #455eff; font-size: 23px; "><b>Mi Cuenta</b></div>    
+                        <div class="card-body" style="color: black;" >
+                            <img src="../img/user.jpg" class="responsive" alt="..." style="max-width: 171px;">
+                            <br>
+                            <h4 class="card-title" style="position:relative; text-align: center;">{{account.names}}</h4>
+                            <br>
+                            <br>
+                            <h5 class="card-subtitle mb-2 text-muted"><b>Codigo: </b>{{account.id}}</h5>
+                            <br>
+                            <h5 class="card-text"><b>Usuario: </b>{{account.username}}</h5>
+                            <br>
+                            <h5 class="card-text"><b>Email: </b>{{account.email}}</h5>
+                        </div>
+                        <div class="card-footer">
+                            <Button class="p-button-raised p-button-help" icon="pi pi-replay" label="Actualizar datos" @click="showEditAccount" style="background-color: #883cae;" />
+                            <Button class="p-button-raised p-button-danger" icon="pi pi-trash" label="Dar de Baja" @click="openConfirmation"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <!--Dialog Agregar Establecimiento-->
+        <Dialog header="Nuevo Establecimiento" footer="Footer" :visible.sync="displayModal" :modal="true" >
+            <span class="p-float-label">
+                <InputText id="nombre" type="text" v-model="data.nombre" placeholder="Nombre Establecimiento" autocomplete="off"/>
+                <label for="nombre"></label>
+            </span>
+            <br />
+            <span class="p-float-label">
+                <InputText id="direccion" type="text"  v-model="data.direccion" placeholder="Direccion"/>
+            </span>
+            <br />
+            <span class="p-float-label">
+                <InputText id="telefono" type="text"  v-model="data.telefono" placeholder="Telefono" />
+                <label for="telefono"></label>
+            </span>
+            <br />
+            <span class="p-float-label">
+                <InputText id="cupo" type="text"  v-model="data.cupo" placeholder="Cupo"/>
+                <label for="cupo"></label>
+            </span>
+            <br />
+            <h5>Ingresar Ubicacion: </h5>
+            <span class="p-float-label">
+                <InputText id="cupo" type="text"  v-model="data.latitud" placeholder="Latitud"/>
+                <label for="cupo"></label>
+            </span>
+            <br />
+            <span class="p-float-label">
+                <InputText id="cupo" type="text"  v-model="data.longitud" placeholder="Longitud"/>
+                <label for="cupo"></label>
+            </span>
+            <br />
+            <span class="p-float-label">
+                <Textarea id="description" v-model="data.muro" required="true" rows="3" cols="25" placeholder="Descripción" />
+                <label for="Descripción"></label>
+            </span>
+            <br />
+            <span class="p-float-label">
+                <Dropdown v-model="data.categoria" :options="categorias" placeholder="Seleccionar Categoria" />
+                <label for="categoria"></label>
+            </span>
+            <template #footer>
+                <Button label="Guardar" icon="pi pi-check" @click="Agregar" />
+                <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
+            </template>
+        </Dialog>
+
+    <!--Dialog Editar Establecimiento-->            
+        <div class="Editar">
+            <Dialog header="Editar Establecimiento" footer="Footer" :visible.sync="editModal" :modal="true" >
                 <span class="p-float-label">
-                    <InputText id="nombre" type="text" v-model="data.nombre" placeholder="Nombre Establecimiento" autocomplete="off"/>
+                    <InputText id="nombre" type="text" v-model="selectedEstablecimiento.estName" placeholder="Escoge uno primero!" disabled/>
                     <label for="nombre"></label>
                 </span>
                 <br />
                 <span class="p-float-label">
-                    <InputText id="direccion" type="text"  v-model="data.direccion" placeholder="Direccion"/>
+                    <InputText id="direccion" type="text" required v-model="selectedEstablecimiento.dir" placeholder="Direccion"/>
                 </span>
                 <br />
                 <span class="p-float-label">
-                    <InputText id="telefono" type="text"  v-model="data.telefono" placeholder="Telefono" />
+                    <InputText id="telefono" type="text" required v-model="selectedEstablecimiento.tel" placeholder="Telefono" />
                     <label for="telefono"></label>
                 </span>
                 <br />
                 <span class="p-float-label">
-                    <InputText id="cupo" type="text"  v-model="data.cupo" placeholder="Cupo"/>
+                    <InputText id="cupo" type="text" required v-model="selectedEstablecimiento.cupoMax" placeholder="Cupo"/>
                     <label for="cupo"></label>
                 </span>
                 <br />
                 <h5>Ingresar Ubicacion: </h5>
                 <span class="p-float-label">
-                    <InputText id="cupo" type="text"  v-model="data.latitud" placeholder="Latitud"/>
+                    <InputText id="cupo" type="text"  v-model="selectedEstablecimiento.latitud" placeholder="Latitud"/>
                     <label for="cupo"></label>
                 </span>
                 <br />
                 <span class="p-float-label">
-                    <InputText id="cupo" type="text"  v-model="data.longitud" placeholder="Longitud"/>
+                    <InputText id="cupo" type="text"  v-model="selectedEstablecimiento.longitud" placeholder="Longitud"/>
                     <label for="cupo"></label>
                 </span>
                 <br />
                 <span class="p-float-label">
-                    <Textarea id="description" v-model="data.muro" required="true" rows="3" cols="25" placeholder="Descripción" />
+                    <Textarea id="description" v-model="selectedEstablecimiento.muro" required="true" rows="3" cols="25" placeholder="Descripción" />
                     <label for="Descripción"></label>
                 </span>
                 <br />
                 <span class="p-float-label">
-                    <Dropdown v-model="data.categoria" :options="categorias" placeholder="Seleccionar Categoria" />
+                    <Dropdown v-model="selectedEstablecimiento.tipoEstablecimiento" :options="categorias" placeholder="Seleccionar Categoria" />
                     <label for="categoria"></label>
                 </span>
                 <template #footer>
-                    <Button label="Guardar" icon="pi pi-check" @click="Agregar" />
+                    <Button label="Guardar" icon="pi pi-check" @click="Editar" />
                     <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
                 </template>
             </Dialog>
-
-<!--Dialog Editar Establecimiento-->            
-            <div class="Editar">
-                <Dialog header="Editar Establecimiento" footer="Footer" :visible.sync="editModal" :modal="true" >
-                    <span class="p-float-label">
-                        <InputText id="nombre" type="text" v-model="selectedEstablecimiento.estName" placeholder="Escoge uno primero!" disabled/>
-                        <label for="nombre"></label>
-                    </span>
-                    <br />
-                    <span class="p-float-label">
-                        <InputText id="direccion" type="text" required v-model="selectedEstablecimiento.dir" placeholder="Direccion"/>
-                    </span>
-                    <br />
-                    <span class="p-float-label">
-                        <InputText id="telefono" type="text" required v-model="selectedEstablecimiento.tel" placeholder="Telefono" />
-                        <label for="telefono"></label>
-                    </span>
-                    <br />
-                    <span class="p-float-label">
-                        <InputText id="cupo" type="text" required v-model="selectedEstablecimiento.cupoMax" placeholder="Cupo"/>
-                        <label for="cupo"></label>
-                    </span>
-                    <br />
-                    <h5>Ingresar Ubicacion: </h5>
-                    <span class="p-float-label">
-                        <InputText id="cupo" type="text"  v-model="selectedEstablecimiento.latitud" placeholder="Latitud"/>
-                        <label for="cupo"></label>
-                    </span>
-                    <br />
-                    <span class="p-float-label">
-                        <InputText id="cupo" type="text"  v-model="selectedEstablecimiento.longitud" placeholder="Longitud"/>
-                        <label for="cupo"></label>
-                    </span>
-                    <br />
-                    <span class="p-float-label">
-                        <Textarea id="description" v-model="selectedEstablecimiento.muro" required="true" rows="3" cols="25" placeholder="Descripción" />
-                        <label for="Descripción"></label>
-                    </span>
-                    <br />
-                    <span class="p-float-label">
-                        <Dropdown v-model="selectedEstablecimiento.tipoEstablecimiento" :options="categorias" placeholder="Seleccionar Categoria" />
-                        <label for="categoria"></label>
-                    </span>
-                    <template #footer>
-                        <Button label="Guardar" icon="pi pi-check" @click="Editar" />
-                        <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
-                    </template>
-                </Dialog>
-            </div>
         </div>
 
-<!--Dialog Editar Cuenta-->
+    <!--Dialog Editar Cuenta-->
         <Dialog header="Editar Cuenta" :visible.sync="displayEdit" :modal="true">
             <span class="p-float-label">
                 <InputText type="text" v-model="account.username" disabled />
@@ -126,7 +206,20 @@
                 <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
             </template>
         </Dialog>
+        
+         <!--Dialog Borrar Establecimiento-->
+            <Dialog header="Eliminar Establecimiento" :visible.sync="displayConfirmationEstablecimiento" :style="{width: '350px'}" :modal="true">
+                <div class="confirmation-content">
+                    <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
+                    <span>¿Estas seguro de eliminar tu establecimiento?</span>
+                </div>
+                <template #footer>
+                    <Button label="Si" icon="pi pi-check" @click="Borrar" class="p-button-text" autofocus />
+                    <Button label="No" icon="pi pi-times" @click="closeConfirmationEstablecimiento" class="p-button-text"/>
+                </template>
+            </Dialog>
 
+    <!--Dialog Borrar Cuenta-->
         <Dialog header="Dar de baja a mi cuenta" :visible.sync="displayConfirmation" :style="{width: '350px'}" :modal="true">
               <div class="confirmation-content">
                   <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
@@ -137,43 +230,8 @@
                 <Button label="No" icon="pi pi-times" @click="closeConfirmation" class="p-button-text"/>
               </template>
         </Dialog>
-
-<!--Tabla Cuenta-->  
-        <div class="datos">
-            <table class="table table-hover">
-            <thead class="thead-dark"> 
-                <tr style="font-family: Orbitron; letter-spacing: 1px;">
-                <th scope="col">ID </th>
-                <th scope="col">USUARIO</th>
-                <th scope="col">NOMBRE</th>
-                <th scope="col">EMAIL</th>
-                <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                <th scope="row" v-text="account.id"></th>
-                <td v-text="account.username"></td>
-                <td v-text="account.names"></td>
-                <td v-text="account.email"></td>
-                <Button label="EDITAR" style="font-family: Orbitron; background-color: #883cae; border-color: #3d0c421a;" class="p-button-rounded p-button-info" icon="pi pi-pencil" @click="showEditAccount"/>
-                <Button class="p-button-rounded p-button-danger" icon="pi pi-trash" @click="openConfirmation"/>
-                </tr>
-            </tbody>
-            </table>
-        </div>
-        <br><br><br><br><br>
-        <h1 style="text-align: center; font-family: Orbitron; font-weight: bold;">MIS ESTABLECIMIENTOS</h1>
-
-<!--Tabla Establecimientos-->           
-        <div class="Datos">
-            <DataTable :value="establecimientos" style="width: 500px; position: relative; left: 50%; transform: translateX(-50%);" :selection.sync="selectedEstablecimiento" selectionMode="single" dataKey="id" :rows="1">
-                <Column headerStyle="color: white; width: 5rem; font-family: Orbitron; background-color: #343a40 " field="id" header="ID"></Column>
-                <Column headerStyle="width: 2rem; font-family: Orbitron; background-color: #343a40"></Column>
-                <Column headerStyle="color: white; font-family: Orbitron; background-color: #343a40" field="estName" header="NOMBRE"></Column>
-            </DataTable>
-        </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -194,6 +252,7 @@ export default {
 
     data() {
 		return {
+            account: null,
             establecimientos: null,
             establecimiento: {},
             selectedEstablecimiento: {},
@@ -201,6 +260,7 @@ export default {
             displayModal: false,
             editModal: false,
             displayConfirmation: false,
+            displayConfirmationEstablecimiento: false,
             data: {
                 id: null,
                 nombre: null,
@@ -212,50 +272,8 @@ export default {
                 latitud:null,
                 longitud:null
             },
-            account: null,
             categorias: [
                 'Restaurante', 'Gimnasio', 'Supermercado', 'Barberia', 'Motel'
-            ],
-			items: [
-                {
-                    label: "HOME",
-                    icon:'pi pi-home',
-                    to: "/home"
-                },
-                {
-                    label: 'AGREGAR ESTABLECIMIENTO',
-                    icon:'pi pi-fw pi-plus',
-                    command: () => {
-                    this.showSaveModal();
-                    }
-                },
-                {
-                    label: 'EDITAR',
-                    icon:'pi pi-fw pi-pencil',
-                    command: () => {
-                    this.showEditModal();
-                    }
-                },
-                {
-                    label: 'BORRAR',
-                    icon:'pi pi-fw pi-trash',
-                    command: () => {
-                        this.Borrar();
-                    }
-                },
-            ],
-            items1: [
-                {
-                    label: "Mi Cuenta",
-                    icon:'pi pi-fw pi-user',
-                    items:[
-                        {
-                            label: 'Cerrar Sesión',
-                            icon:'pi pi-fw pi-power-off',
-                            to: '/login'
-                        }
-                    ]
-                },
             ],
         };
     },
@@ -335,7 +353,7 @@ export default {
             })
             .then(response => {
             console.log(response.data);  
-            alert("Actualizado");
+             this.$toast.add({severity:'success', summary: 'Actualizado', detail:'Se ha actualizado correctamente tus datos.', life: 3000});
             this.closeModal();
             })
             .catch(error => {
@@ -381,6 +399,12 @@ export default {
         },
         closeConfirmation() {
             this.displayConfirmation = false;
+        },
+        openConfirmationEstablecimiento() {
+            this.displayConfirmationEstablecimiento = true;
+        },
+        closeConfirmationEstablecimiento() {
+            this.displayConfirmationEstablecimiento = false;
         }
     }
 };
@@ -389,13 +413,32 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css?family=Orbitron');
 .Owner {
-    position: absolute;
-    background-color: #3d0c421a;
-    padding: 0px;
-    margin: 0%;
-    width: 100%;
-    height: 100%;
+  position: relative;
+  background: url("../img/fondo.jpeg") no-repeat;
+  background-size: cover;
+  background-position: center center;
+  color: white;
+  padding: 0px;
+  margin: 0%;
+  width: 100%;
+  height: 100vh; 
+}
+h4{
+  display: inline-block;
+  margin: 0 20px;
+}
+.product-item .product-item-content {
+  position: relative;
+  border: 1px solid var(--surface-d);
+  box-shadow: 0 0 5px#1eb1eb, 0 0 5px white, 0 0 5px #1eb1eb;
+  border-radius: 30px;
+  margin: .3rem;
+  text-align: center;
+  padding: 2rem 0;
 }
 
-
+.product-image {
+    width: 50%;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
+}
 </style>

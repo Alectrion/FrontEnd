@@ -45,7 +45,8 @@
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
            <div class="Misfav" style="position:relative; ">
-              <Carousel :value="establecimientos" :numVisible="3" :numScroll="1" :selection.sync="selectedEstablecimiento" dataKey="id"  :responsiveOptions="responsiveOptions" class="custom-carousel" :circular="true" :autoplayInterval="3000">
+              <Carousel :value="favoriteslist" :numVisible="2" :numScroll="1" :selection.sync="selectedEstablecimiento" dataKey="id"  
+              :responsiveOptions="responsiveOptions" class="custom-carousel" :circular="true" :autoplayInterval="3000" style="">
                 <template #item="slotProps">
                   <div class="product-item">
                     <div class="product-item-content">
@@ -53,12 +54,14 @@
                         
                       </div>
                       <div>
-                        <h2 class="p-mb-1">{{slotProps.data.estName}}</h2>
+                        <h1 class="p-mb-1">{{slotProps.data.estName}}</h1>
                         <h6 class="p-mt-0 p-mb-3">{{slotProps.data.dir}}</h6>
+                        <h6 class="p-mt-0 p-mb-3">Tel: {{slotProps.data.tel}}</h6>
+                        <span class="badge badge-pill badge-primary" style="font-size: 20px">{{slotProps.data.tipoEstablecimiento}}</span>
                         <div class="car-buttons p-mt-5">  
-                            <Button icon="pi pi-eye" class="p-button p-button-rounded p-mr-2" />
-                            <Button icon="pi pi-star" class="p-button-success p-button-rounded p-mr-2"  />
+                            <Button icon="pi pi-eye" class="p-button p-button-rounded p-mr-2" @click="showEstDialog(slotProps.data),ActFav(slotProps.data.id)"/>
                             <Button icon="pi pi-calendar" class="p-button-info p-button-rounded" @click="showbookingDialog(slotProps.data)" />
+                            <InputSwitch v-model="favorite" style="position: relative; left:3%; " @click="AddFav(slotProps.favorite),ActFav(slotProps.data.id)" />
                         </div> 
                       </div>
                     </div>
@@ -70,8 +73,47 @@
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
           Hola2
         </div>
-      </div>
-    <div class="Favoritos">
+    </div>
+    
+     <div class="Informacion">
+      <Dialog :visible.sync="estDialog" :style="{width: '500px'}" header="Informacion del Establecimiento" :modal="true" class="p-fluid">
+        <div class="p-field" style="text-align: center; fcolor: #883cae; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; height: 52px;">
+          <h2>{{establecimiento.estName}}</h2>
+        </div >
+        <div style="position:relative; height: 32px;">
+          <h5>Personas actualmente: {{aforo}}</h5>
+        </div>
+        <div class="Botones">
+          <Button label="Mostrar aforo" class="p-button-raised p-button-success" style="position: relative; left:70%; width: 30%; transform: translateY(30%);"/>
+          <InputSwitch v-model="favorite" style="position: relative; left:-30%; " @click="AddFav(favorite)" />
+          <br>
+          <h3 style="position: relative; font-family: Orbitron; font-size: 20px;">Favoritos</h3>
+          <br>        
+        </div>
+        <div style="position: relative; height: 47px;">
+          <h5>Categoria:</h5>
+          <RadioButton inputId="tipoEstablecimiento" name="city" :value="establecimiento.tipoEstablecimiento" v-model="establecimiento.tipoEstablecimiento" style="position: relative; left:24%; transform: translateY(-215%);"/>
+          <label for="tipoEstablecimiento" style="position: relative; font-size: 18px; font-weight: 499; left:25%; transform: translateY(-120%);">{{ establecimiento.tipoEstablecimiento}} </label>
+        </div>
+        <div class="Detalles" style="position: relative; height: 83px;">
+          <h5>Dirección:</h5><p>{{establecimiento.dir}}</p>
+          <div class="tel" style="position: relative; left: 65%; width: 20%; transform: translateY(-130%);">
+            <h5 id="Telef">Telefono:</h5><p>{{establecimiento.tel}}</p>
+          </div>
+        </div>
+        <div class="p-field">
+            <h5>Muro:</h5>
+            <Textarea id="description" v-model="establecimiento.muro" required="true" rows="3" cols="20" disabled />
+            <br>
+        </div>
+            <h5>Flujo de Personas:</h5>
+            <Chart type="bar" :data="basicData" />
+            <br>
+        <div class="Mapa">
+          <h5>Mapa:</h5>
+          <GoogleMap style="position: relative;" :latitude= parseFloat(establecimiento.latitud) :longitude= parseFloat(establecimiento.longitud) />
+        </div>
+      </Dialog>
     </div>
     <div class="Reserva" >
       <Dialog  footer="Footer" :style="{width: '40vw'}" position="right" :visible.sync="bookingDialog" :modal="true">
@@ -99,7 +141,8 @@ import {getAuthenticationToken} from '@/dataStorage';
 
 const path = "Establecimientos"
 const path2 = "cliente/establecimientos/"
-const path3 = "persona?access_token=" + getAuthenticationToken() ;
+const path3 = "persona";
+const access = "?access_token="
 
 export default {
   name: 'HomeUser',
@@ -111,6 +154,8 @@ export default {
             account: null,
             establecimientos: null,
             establecimiento: {},
+            favoriteslist: null,
+            favorite: false,
             estDialog: false,
             bookingDialog: false,
             deleteProductDialog: false,
@@ -120,7 +165,6 @@ export default {
             filters: {},
             filters1: {},
             submitted: false,
-            expandedRows: [],
             tipoEstablecimiento: [
                 'Restaurante', 'Gimnasio', 'Supermercado', 'Barberia', 'Motel'
             ],
@@ -171,17 +215,16 @@ export default {
         }
   },
    mounted(){
-        this.ShowEstablecimientos();
         this.Persona();
     },
   
   methods: {
     Persona() {
-       axios.get(this.$store.state.backURL + path3, {
+       axios.get(this.$store.state.backURL + path3 + access + getAuthenticationToken(), {
        })
       .then(response => {
         this.account = response.data;
-        this.cuenta = this.account.id;
+        this.Favorites();
 
       })
       .catch(err => {
@@ -194,29 +237,6 @@ export default {
       .then(response => {
           this.establecimientos = response.data;
           this.establecimientos.cupoMax = this.establecimientos.cupoMax - this.disponible;
-      })
-      .catch(err => {
-          alert(err);
-      })
-    },
-    ShowFavs() {
-      axios.get(this.$store.state.backURL + path2 + this.account.id + "?access_token=" + getAuthenticationToken(), {
-      })
-      .then(response => {
-          this.establecimientos1 = response.data;
-      })
-      .catch(err => {
-          alert(err);
-      })
-    },
-    AddFav() {
-      axios.post(this.$store.state.backURL + path2 + "favoritos" + getAuthenticationToken(), {
-        userID: this.account.id,
-        estID: this.establecimiento.id
-      })
-      .then(response => {
-          console.log(response.data);
-          alert("Success");
       })
       .catch(err => {
           alert(err);
@@ -237,7 +257,59 @@ export default {
           alert(err);
       })
     },
-    showEstDialog() {
+    Favorites() {
+       axios.get(this.$store.state.backURL + path2 + "misfavoritos/" + this.account.id + access + getAuthenticationToken(), {
+       })
+      .then(response => {
+        this.favoriteslist = response.data;
+      })
+      .catch(err => {
+        alert(err);
+      })
+    },
+    IsFavorite(idEst){
+      var isfavorite = false;
+      for (var i = 0; i < this.favoriteslist.length; i++){
+        if (this.favoriteslist[i].id==idEst){
+          isfavorite = true;
+        }
+      }
+      return isfavorite;
+    },
+    ActFav(idEst){
+      this.favorite = this.IsFavorite(idEst)
+    },
+    AddFav(fav) {
+      if(fav==false){
+          axios.post(this.$store.state.backURL + path2 + "favoritos" + access + getAuthenticationToken(), {
+          userID: this.account.id,
+          estID: this.establecimiento.id
+        })
+        .then(response => {
+            console.log(response.data);
+            alert("Agregado");
+            location.reload();
+        })
+        .catch(err => {
+            alert(err);
+        })
+      }else{
+        axios.delete(this.$store.state.backURL + path2 + "favoritos" + access + getAuthenticationToken(), { data: {
+          userID: this.account.id,
+          estID: this.establecimiento.id}, 
+        })
+        .then(response => {
+            console.log(response.data);
+            this.$toast.add({severity:'success', summary: 'Borrado de favoritos', detail:'',  life: 2000});
+            location.reload();
+        })
+        .catch(err => {
+            alert(err);
+        })
+      }
+    },
+    showEstDialog(establecimiento) {
+      this.establecimiento = {...establecimiento};
       this.estDialog= true;
     },
     closeEstDialog() {

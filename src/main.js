@@ -35,7 +35,10 @@ import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import Toast from 'primevue/toast';
 import Rating from 'primevue/rating';
+import Fieldset from 'primevue/fieldset';
+import Panel from 'primevue/panel';
 import DataView from 'primevue/dataview';
+
 
 
 Vue.config.productionTip = false
@@ -63,6 +66,8 @@ Vue.component('Accordion', Accordion);
 Vue.component('AccordionTab', AccordionTab);
 Vue.component('Toast', Toast);
 Vue.component('Rating', Rating);
+Vue.component('Fieldset', Fieldset);
+Vue.component('Panel', Panel);
 Vue.component('Dataview', DataView);
 
 
