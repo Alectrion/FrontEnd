@@ -153,7 +153,7 @@ const path2 = "persona?access_token=" + getAuthenticationToken() ;
 const path3 = "cliente/establecimientos/reservas?access_token="
 const path4 = "cliente/establecimientos/favoritos?access_token="
 const path5 = "cliente/establecimientos/misfavoritos/"
-const path6 = "cliente/establecimientos/favoritos?access_token=" + getAuthenticationToken() ;
+const path6 = "cliente/establecimientos/qfavoritos?access_token=" + getAuthenticationToken() ;
 const access = "?access_token="
 
 export default {

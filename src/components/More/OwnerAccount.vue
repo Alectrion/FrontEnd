@@ -13,14 +13,18 @@
                 <li class="nav-item">
                 <h4 class="nav-link"><router-link to='/home' style="color: white; text-decoration: none" title='Home'> Home</router-link></h4>
                 </li>
+                <li class="nav-item">
+                <h4 class="nav-link" @click="showSaveModal"><router-link to='' style="color: white; text-decoration: none;" title='Registar'> Registra tu establecimiento</router-link></h4>
+                </li>
             </ul>
             <ul class="navbar-nav ml-md-auto">
                 <li class="nav-item">
-                <h4 class="nav-link"><router-link to='/welcome' style="color: white; text-decoration: none" title='Home'> Cerrar Sesion</router-link></h4>
+                <h4 class="nav-link"><router-link to='/welcome' style="color: white; text-decoration: none; border: 2px solid white; moz-border-radius: 10px; webkit-border-radius: 10px; padding: 5px;"  title='Home'> Cerrar Sesion</router-link></h4>
                 </li>
             </ul>
             </div>
         </nav>
+        <br>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
         <br>
         <br>
@@ -67,9 +71,9 @@
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="datos" style="position: relative; max-width:35%; left: 32%;">
                     <div class="card text-center" style="position:relative; ">
-                        <div class="card-header" style="color: #455eff; font-size: 23px; "><b>Mi Cuenta</b></div>    
+                        <div class="card-header" style="color: #455eff; font-size: 22px; "><b>Mi Cuenta</b></div>    
                         <div class="card-body" style="color: black;" >
-                            <img src="../img/user.jpg" class="responsive" alt="..." style="max-width: 171px;">
+                            <img src="../img/user.jpg" class="responsive" alt="..." style="max-width: 160px;">
                             <br>
                             <h4 class="card-title" style="position:relative; text-align: center;">{{account.names}}</h4>
                             <br>
@@ -89,9 +93,9 @@
             </div>
     </div>
     <!--Dialog Agregar Establecimiento-->
-        <Dialog header="Nuevo Establecimiento" footer="Footer" :visible.sync="displayModal" :modal="true" >
+        <Dialog header="Agregar Establecimiento" footer="Footer"   position="left" :visible.sync="displayModal" :modal="true" >
             <span class="p-float-label">
-                <InputText id="nombre" type="text" v-model="data.nombre" placeholder="Nombre Establecimiento" autocomplete="off"/>
+                <InputText id="nombre" type="text" v-model="data.nombre" placeholder="Nombre del Establecimiento" autocomplete="off"/>
                 <label for="nombre"></label>
             </span>
             <br />
@@ -129,10 +133,10 @@
                 <Dropdown v-model="data.categoria" :options="categorias" placeholder="Seleccionar Categoria" />
                 <label for="categoria"></label>
             </span>
-            <template #footer>
-                <Button label="Guardar" icon="pi pi-check" @click="Agregar" />
-                <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
-            </template>
+        <template #footer>
+            <Button label="Guardar" icon="pi pi-check" @click="Agregar" />
+            <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
+        </template>
         </Dialog>
 
     <!--Dialog Editar Establecimiento-->            
@@ -185,19 +189,19 @@
         </div>
 
     <!--Dialog Editar Cuenta-->
-        <Dialog header="Editar Cuenta" :visible.sync="displayEdit" :modal="true">
+        <Dialog header="Editar Cuenta" :visible.sync="displayEdit" :style="{width: '21vw'}" position="top" :modal="true">
             <span class="p-float-label">
-                <InputText type="text" v-model="account.username" disabled />
+                <InputText type="text" v-model="account.username" disabled style="width: 100%" />
                 <label for="name"></label>
             </span>
             <br />
             <span class="p-float-label">
-                <InputText id="name" type="text" required v-model="account.names" autocomplete="off" placeholder="Nombre"/>
+                <InputText id="name" type="text" required v-model="account.names" autocomplete="off" placeholder="Nombre" style="width: 100%" />
                 <label for="name"></label>
             </span>
             <br />
             <span class="p-float-label">
-                <InputText id="Email" type="text" required v-model="account.email" autocomplete="off" placeholder="Email"/>
+                <InputText id="Email" type="text" required v-model="account.email" autocomplete="off" placeholder="Email" style="width: 100%" />
                 <label for="email"></label>
             </span>
         

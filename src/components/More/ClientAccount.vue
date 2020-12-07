@@ -19,25 +19,25 @@
           </ul>
           <ul class="navbar-nav ml-md-auto">
             <li class="nav-item">
-              <h4 class="nav-link"><router-link to='/welcome' style="color: white; text-decoration: none" title='Home'> Cerrar Sesion</router-link></h4>
+              <h4 class="nav-link"><router-link to='/welcome' style="color: white; text-decoration: none; border: 2px solid white; moz-border-radius: 10px; webkit-border-radius: 10px; padding: 5px;" title='Home'> Cerrar Sesion</router-link></h4>
             </li>
           </ul>
         </div>
       </nav>
     </div>
-        <Dialog header="Editar Cuenta"  position="top" :visible.sync="displayModal" :modal="true">
+        <Dialog header="Editar Cuenta"  position="top" :style="{width: '21vw'}" :visible.sync="displayModal" :modal="true">
             <span class="p-float-label">
-                <InputText type="text" v-model="account.username" disabled />
+                <InputText type="text" v-model="account.username" disabled style="width: 100%" />
                 <label for="name"></label>
             </span>
             <br />
             <span class="p-float-label">
-                <InputText id="name" type="text" required v-model="account.names" autocomplete="off" placeholder="Nombre" />
+                <InputText id="name" type="text" required v-model="account.names" autocomplete="off" placeholder="Nombre" style="width: 100%" />
                 <label for="name"></label>
             </span>
             <br />
             <span class="p-float-label">
-                <InputText id="Email" type="text" required v-model="account.email" autocomplete="off" placeholder="Email"/>
+                <InputText id="Email" type="text" required v-model="account.email" autocomplete="off" placeholder="Email" style="width: 100%"/>
                 <label for="email"></label>
             </span>
         

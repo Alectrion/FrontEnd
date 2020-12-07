@@ -39,7 +39,7 @@
           <h5 class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Mis Favoritos</h5>
         </li>
         <li class="nav-item">
-          <h5 class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Mis Reservas</h5>
+          <h5 class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"   @click="ShowEstablecimientos" aria-controls="profile" aria-selected="false">Mis Reservas</h5>
         </li>
       </ul>
       <div class="tab-content" id="myTabContent">
@@ -61,7 +61,6 @@
                         <div class="car-buttons p-mt-5">  
                             <Button icon="pi pi-eye" class="p-button p-button-rounded p-mr-2" @click="showEstDialog(slotProps.data),ActFav(slotProps.data.id)"/>
                             <Button icon="pi pi-calendar" class="p-button-info p-button-rounded" @click="showbookingDialog(slotProps.data)" />
-                            <InputSwitch v-model="favorite" style="position: relative; left:3%; " @click="AddFav(slotProps.favorite),ActFav(slotProps.data.id)" />
                         </div> 
                       </div>
                     </div>
@@ -70,8 +69,18 @@
               </Carousel>
             </div> 
         </div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-          Hola2
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab"  @click="ShowEstablecimientos">
+          <div class="datos" style="position: relative; max-width:35%; left: 32%;">
+            <div class="card text-center" style="position:relative; ">
+              <DataTable :value="establecimientos" style="width: 500px; position: relative; left: 50%; transform: translateX(-50%);" :selection.sync="selectedEstablecimiento" selectionMode="single" dataKey="id" :rows="1">
+                <Column field="id" header="Codigo"></Column>
+                <Column field="estName" header="Nombre"></Column>
+                <Column field="dir" header="Direccion"></Column>
+                <Column field="tel" header="Telefono"></Column>
+                <Column field="tipoEstablecimiento" header="Categoria"></Column>
+              </DataTable>
+            </div>
+          </div>
         </div>
     </div>
     
@@ -139,9 +148,10 @@
 import axios from "axios";
 import {getAuthenticationToken} from '@/dataStorage';
 
-const path = "Establecimientos"
+
 const path2 = "cliente/establecimientos/"
 const path3 = "persona";
+const path4 = "cliente/establecimientos/misreservas/";
 const access = "?access_token="
 
 export default {
@@ -153,7 +163,9 @@ export default {
     return{
             account: null,
             establecimientos: null,
+            establecimientos1: null,
             establecimiento: {},
+            aforo: 20,
             favoriteslist: null,
             favorite: false,
             estDialog: false,
@@ -198,16 +210,16 @@ export default {
             responsiveOptions: [
               {
                 breakpoint: '1024px',
-                numVisible: 3,
-                numScroll: 3
-              },
-              {
-                breakpoint: '600px',
                 numVisible: 2,
                 numScroll: 2
               },
               {
-                breakpoint: '480px',
+                breakpoint: '500px',
+                numVisible: 2,
+                numScroll: 2
+              },
+              {
+                breakpoint: '380px',
                 numVisible: 1,
                 numScroll: 1
               }
@@ -216,6 +228,7 @@ export default {
   },
    mounted(){
         this.Persona();
+        this.ActFav();
     },
   
   methods: {
@@ -232,11 +245,10 @@ export default {
       })
     },
     ShowEstablecimientos() {
-      axios.get(this.$store.state.backURL + path, {
+      axios.get(this.$store.state.backURL + path4 + this.account.id + access + getAuthenticationToken(), {
       })
       .then(response => {
           this.establecimientos = response.data;
-          this.establecimientos.cupoMax = this.establecimientos.cupoMax - this.disponible;
       })
       .catch(err => {
           alert(err);
@@ -294,7 +306,7 @@ export default {
             alert(err);
         })
       }else{
-        axios.delete(this.$store.state.backURL + path2 + "favoritos" + access + getAuthenticationToken(), { data: {
+        axios.delete(this.$store.state.backURL + path2 + "qfavoritos" + access + getAuthenticationToken(), { data: {
           userID: this.account.id,
           estID: this.establecimiento.id}, 
         })
