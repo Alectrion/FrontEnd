@@ -99,7 +99,7 @@
     </div>
     
      <div class="Informacion">
-      <Dialog :visible.sync="estDialog" :style="{width: '500px'}" header="Informacion del Establecimiento" :modal="true" class="p-fluid">
+      <Dialog :visible.sync="estDialog" :style="{width: '500px'}" header="Informacion del Establecimiento" :maximizable="true" :modal="true" class="p-fluid">
         <div class="p-field" style="text-align: center; fcolor: #883cae; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; height: 52px;">
           <h2>{{establecimiento.estName}}</h2>
         </div >
@@ -170,7 +170,7 @@
 </template>
 
 <script>
-
+import GoogleMap from "./GoogleMap";
 import axios from "axios";
 import {getAuthenticationToken} from '@/dataStorage';
 
@@ -183,7 +183,7 @@ const access = "?access_token="
 export default {
   name: 'HomeUser',
   components: {
-  
+    GoogleMap
   },
   data(){
     return{
@@ -289,9 +289,9 @@ export default {
       })
       .then(response => {
           console.log(response.data);
-          this.$toast.add({severity:'success', summary: 'Reserva Exitosa!', detail:'Se agrego correctamente la reserva de ' 
+          this.$toast.add({severity:'success', summary: 'Reserva Exitosa!!', detail:'Se agrego correctamente la reserva de ' 
           + this.establecimiento.estName  + '\n' + ' A las: ' + this.selectedhour.name ,  life: 4000});
-          this.close
+          this.closebookingDialog();
       })
       .catch(err => {
           alert(err);
@@ -305,7 +305,7 @@ export default {
         })
         .then(response => {
             console.log(response.data);
-            this.$toast.add({severity:'success', summary: 'Se ha borrado tu reserva', detail:'',  life: 2000});
+            this.$toast.add({severity:'info', summary: 'Se ha borrado tu reserva', detail:'',  life: 2000});
             this.closeConfirmationReserva();
             this.ShowEstablecimientos();
         })
@@ -357,7 +357,7 @@ export default {
         .then(response => {
             console.log(response.data);
             this.$toast.add({severity:'info', summary: 'Borrado de favoritos', detail:'',  life: 2000});
-            location.reload();
+            this.Persona();
         })
         .catch(err => {
             alert(err);

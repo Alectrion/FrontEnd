@@ -85,7 +85,7 @@
     </div>
 
     <div class="Informacion">
-      <Dialog :visible.sync="estDialog" :style="{width: '500px'}" header="Informacion del Establecimiento" :modal="true" class="p-fluid">
+      <Dialog :visible.sync="estDialog" :style="{width: '500px'}" header="Informacion del Establecimiento" :maximizable="true" :modal="true" class="p-fluid">
         <div class="p-field" style="text-align: center; font-family: Orbitron; color:#455eff; height: 52px;">
             <h2>{{establecimiento.estName}}</h2>
         </div >
@@ -268,8 +268,9 @@ export default {
       })
       .then(response => {
           console.log(response.data);
-          this.$toast.add({severity:'success', summary: 'Reserva Exitosa!', detail:'Se agrego correctamente la reserva de ' 
+          this.$toast.add({severity:'success', summary: 'Reserva Exitosa!!', detail:'Se agrego correctamente la reserva de ' 
           + this.establecimiento.estName  + '\n' + ' A las: ' + this.selectedhour.name ,  life: 4000});
+          this.closebookingDialog()
       })
       .catch(err => {
           alert(err);
@@ -305,8 +306,7 @@ export default {
         })
         .then(response => {
             console.log(response.data);
-            alert("Agregado");
-            location.reload();
+            this.$toast.add({severity:'success', summary: 'Agregado a favoritos', detail:'',  life: 2000});
         })
         .catch(err => {
             alert(err);
@@ -318,8 +318,8 @@ export default {
         })
         .then(response => {
             console.log(response.data);
-            this.$toast.add({severity:'success', summary: 'Borrado de favoritos', detail:'',  life: 2000});
-            location.reload();
+            this.$toast.add({severity:'info', summary: 'Borrado de favoritos', detail:'',  life: 2000});
+            this.closeEstDialog();
         })
         .catch(err => {
             alert(err);

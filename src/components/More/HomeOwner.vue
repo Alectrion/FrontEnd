@@ -51,7 +51,7 @@
                       </div>
                       <div>
                         <br>
-                        <h1 class="p-mb-1" style=""><b>{{slotProps.data.estName}}</b></h1><br>
+                        <h1 class="p-mb-1" style="color:#455eff;"><b>{{slotProps.data.estName}}</b></h1><br>
                         <h5 class="p-mt-0 p-mb-3" style="color:#7f8182;"><b>Código: </b>{{slotProps.data.id}}</h5>
                         <h5 class="p-mt-0 p-mb-3"><b>Dirección: </b>{{slotProps.data.dir}}</h5>
                         <h5 class="p-mt-0 p-mb-3"><b>Teléfono: </b>{{slotProps.data.tel}}</h5>
@@ -256,6 +256,8 @@ export default {
   border-radius: 10px;
   margin: .3rem;
   text-align: center;
+  background: white;
+  color: black;
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }
 

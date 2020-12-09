@@ -14,7 +14,7 @@
                 <h4 class="nav-link"><router-link to='/home' style="color: white; text-decoration: none" title='Home'> Home</router-link></h4>
                 </li>
                 <li class="nav-item">
-                <h4 class="nav-link" @click="showSaveModal"><router-link to='' style="color: white; text-decoration: none;" title='Registar'> Registra tu establecimiento</router-link></h4>
+                <h4 class="nav-link" @click="showSaveModal"><router-link to='' style="color: white;" title='Registar'> Registra tu establecimiento</router-link></h4>
                 </li>
             </ul>
             <ul class="navbar-nav ml-md-auto">
@@ -92,9 +92,9 @@
             </div>
     </div>
     <!--Dialog Agregar Establecimiento-->
-        <Dialog header="Agregar Establecimiento" footer="Footer"   position="left" :visible.sync="displayModal" :modal="true" >
+        <Dialog header="Agregar Establecimiento" footer="Footer"  :style="{width: '500px'}" style="text-align: center" position="top" :maximizable="true" :visible.sync="displayModal" :modal="true" >
             <span class="p-float-label">
-                <InputText id="nombre" type="text" v-model="data.nombre" placeholder="Nombre del Establecimiento" autocomplete="off"/>
+                <InputText id="nombre" type="text" v-model="data.nombre" :maximizable="true" placeholder="Nombre del Establecimiento" autocomplete="off"/>
                 <label for="nombre"></label>
             </span>
             <br />
@@ -149,7 +149,7 @@
 
     <!--Dialog Editar Establecimiento-->            
         <div class="Editar">
-            <Dialog header="Editar Establecimiento" footer="Footer" position="left" :visible.sync="editModal" :modal="true" >
+            <Dialog header="Editar Establecimiento" footer="Footer" position="left" :maximizable="true" :visible.sync="editModal" :modal="true" >
                 <span class="p-float-label">
                     <InputText id="nombre" type="text" v-model="selectedEstablecimiento.estName" placeholder="Escoge uno primero!" disabled/>
                     <label for="nombre"></label>
