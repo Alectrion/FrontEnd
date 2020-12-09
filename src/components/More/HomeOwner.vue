@@ -51,13 +51,13 @@
                       </div>
                       <div>
                         <br>
-                        <h1 class="p-mb-1" style="color:#455eff;"><b>{{slotProps.data.estName}}</b></h1><br>
+                        <h1 class="p-mb-1" style=""><b>{{slotProps.data.estName}}</b></h1><br>
                         <h5 class="p-mt-0 p-mb-3" style="color:#7f8182;"><b>Código: </b>{{slotProps.data.id}}</h5>
                         <h5 class="p-mt-0 p-mb-3"><b>Dirección: </b>{{slotProps.data.dir}}</h5>
                         <h5 class="p-mt-0 p-mb-3"><b>Teléfono: </b>{{slotProps.data.tel}}</h5>
                         <span class="badge badge-pill badge-primary" style="font-size: 20px">{{slotProps.data.tipoEstablecimiento}}</span>
                         <div class="car-buttons p-mt-5">  
-                          <Button class="p-button-raised p-button-help" icon="pi pi-calendar" @click="showocupDialog(slotProps.data)" label="Reservas de mi establecimiento"  style="background-color: #883cae; font-weight: 700;" />
+                          <Button class="p-button-raised p-button-help" icon="pi pi-calendar"  label="Reservas de mi establecimiento"  style="background-color: #883cae; font-weight: 700;" />
                         </div>
                         <br>
                         <h5 class="p-mt-0 p-mb-3"><b>Muro: </b></h5>
@@ -256,7 +256,6 @@ export default {
   border-radius: 10px;
   margin: .3rem;
   text-align: center;
-  background: rgb(255, 255, 255, 0.3);
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }
 

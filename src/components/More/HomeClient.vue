@@ -58,6 +58,8 @@
                         <h6 class="p-mt-0 p-mb-3">{{slotProps.data.dir}}</h6>
                         <h6 class="p-mt-0 p-mb-3">Tel: {{slotProps.data.tel}}</h6>
                         <span class="badge badge-pill badge-primary" style="font-size: 20px">{{slotProps.data.tipoEstablecimiento}}</span>
+                        <br><br>
+                          <Textarea id="description" v-model="slotProps.data.muro" required="true" rows="4" cols="30" placeholder="Muro" disabled />
                         <div class="car-buttons p-mt-5">  
                             <Button icon="pi pi-eye" class="p-button p-button-rounded p-mr-2" @click="showEstDialog(slotProps.data),ActFav(slotProps.data.id)"/>
                             <Button icon="pi pi-calendar" class="p-button-info p-button-rounded" @click="showbookingDialog(slotProps.data)" />
@@ -70,12 +72,29 @@
             </div> 
         </div>
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab"  @click="ShowEstablecimientos">
-          <div class="datos" style="position: relative; max-width:35%; left: 32%;">
-              <DataTable :value="establecimientos" style="width: 500px; position: relative; left: 50%; transform: translateX(-50%);" :selection.sync="selectedEstablecimiento" selectionMode="single" :paginator="true" :rows="5" dataKey="id">
-                <Column field="estID" header="Establecimiento"></Column>
-                <Column field="horario" header="Hora"></Column>
-              </DataTable>
-          </div>
+          <div class="Datos Establecimientos" style="">
+                    <Carousel :value="establecimientos" :numVisible="1" :numScroll="1" :selection.sync="selectedEstablecimiento" dataKey="id"  
+                    :responsiveOptions="responsiveOptions" :circular="true" class="custom-carousel" 
+                    style="max-width: 495px; position:relative; left:32%;">
+
+                        <template #item="slotProps">
+                        <div class="product-item">
+                            <div class="product-item-content" style="background: white; box-shadow: 0 0 5px#883cae, 0 0 5px white, 0 0 5px #883cae;">
+                            <div>
+                                <h1 class="p-mb-1" style="color:#455eff;"><b>{{slotProps.data.estName}}</b></h1><br>
+                                <h5 class="p-mt-0 p-mb-3" style="color:black;">{{slotProps.data.dir}}</h5>
+                                <span class="badge badge-pill badge-primary" style="font-size: 20px;">{{slotProps.data.tipoEstablecimiento}}</span>
+                                <br><br>
+                                <h5 class="p-mt-0 p-mb-3" style="color:#7f8182;"><b>Hora: </b>{{slotProps.data.horario}}</h5>
+                                <div class="car-buttons p-mt-5">  
+                                  <Button class="p-button-raised p-button-danger" icon="pi pi-times" label="Eliminar Reserva" @click="openConfirmationReserva(slotProps.data)"/>
+                                </div> 
+                            </div>
+                            </div>
+                        </div>
+                        </template>
+                    </Carousel>
+                </div>
         </div>
     </div>
     
@@ -135,6 +154,18 @@
         </template>
       </Dialog>
     </div> 
+
+     <!--Dialog Eliminar Reserva-->
+            <Dialog header="Eliminar tu reserva" :visible.sync="displayConfirmationReserva" :style="{width: '350px'}" :modal="true">
+                <div class="confirmation-content">
+                    <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
+                    <span>¿Estas seguro de eliminar tu reserva de {{this.selectedEstablecimiento.horario }} ?</span>
+                </div>
+                <template #footer>
+                    <Button label="Si" icon="pi pi-check" @click="EliminarReserva" class="p-button-text" autofocus />
+                    <Button label="No" icon="pi pi-times" @click="closeConfirmationReserva" class="p-button-text"/>
+                </template>
+            </Dialog>
   </div>
 </template>
 
@@ -165,10 +196,11 @@ export default {
             favorite: false,
             estDialog: false,
             bookingDialog: false,
+            displayConfirmationReserva: false,
             deleteProductDialog: false,
             deleteProductsDialog: false,
             selectedhour: null,
-            selectedEstablecimiento: null,
+            selectedEstablecimiento: {},
             filters: {},
             filters1: {},
             submitted: false,
@@ -259,10 +291,27 @@ export default {
           console.log(response.data);
           this.$toast.add({severity:'success', summary: 'Reserva Exitosa!', detail:'Se agrego correctamente la reserva de ' 
           + this.establecimiento.estName  + '\n' + ' A las: ' + this.selectedhour.name ,  life: 4000});
+          this.close
       })
       .catch(err => {
           alert(err);
       })
+    },
+    EliminarReserva(){
+      axios.delete(this.$store.state.backURL + path2 + "qreserva" + access + getAuthenticationToken(), { data: {
+          userID: this.account.id,
+          estID: this.selectedEstablecimiento.estID,
+          horario: this.selectedEstablecimiento.horario}, 
+        })
+        .then(response => {
+            console.log(response.data);
+            this.$toast.add({severity:'success', summary: 'Se ha borrado tu reserva', detail:'',  life: 2000});
+            this.closeConfirmationReserva();
+            this.ShowEstablecimientos();
+        })
+        .catch(err => {
+            alert(err);
+        })
     },
     Favorites() {
        axios.get(this.$store.state.backURL + path2 + "misfavoritos/" + this.account.id + access + getAuthenticationToken(), {
@@ -294,7 +343,7 @@ export default {
         })
         .then(response => {
             console.log(response.data);
-            alert("Agregado");
+            this.$toast.add({severity:'success', summary: 'Agregado a favoritos', detail:'',  life: 2000});
             location.reload();
         })
         .catch(err => {
@@ -307,7 +356,7 @@ export default {
         })
         .then(response => {
             console.log(response.data);
-            this.$toast.add({severity:'success', summary: 'Borrado de favoritos', detail:'',  life: 2000});
+            this.$toast.add({severity:'info', summary: 'Borrado de favoritos', detail:'',  life: 2000});
             location.reload();
         })
         .catch(err => {
@@ -329,6 +378,13 @@ export default {
     closebookingDialog() {
       this.bookingDialog = false;
     },
+    openConfirmationReserva(selectedEstablecimiento) {
+      this.selectedEstablecimiento = {...selectedEstablecimiento};
+      this.displayConfirmationReserva = true;
+    },
+    closeConfirmationReserva() {
+      this.displayConfirmationReserva = false;
+    }
   },
 }
 </script>
@@ -357,7 +413,7 @@ export default {
   border-radius: 30px;
   margin: .3rem;
   text-align: center;
-  padding: 2rem 0;
+  padding: 1rem 0;
 }
 
 .product-image {

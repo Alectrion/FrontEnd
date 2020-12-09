@@ -132,6 +132,7 @@
                 <Dropdown v-model="data.categoria" :options="categorias" placeholder="Seleccionar Categoria" />
                 <label for="categoria"></label>
             </span>
+            <br>
             <span class="p-float-label">
                 <h5>Imagen Ocupación: </h5>
                 <FileUpload name="demo[]" url="./upload.php" @upload="onUpload" :multiple="true" accept="image/*" :maxFileSize="1000000">
@@ -371,7 +372,7 @@ export default {
             })
             .then(response => {
                 console.log(response.data);
-                this.$toast.add({severity:'success', summary: 'Actualizado', detail: this.selectedEstablecimiento.estName + ' Se ha actualizado correctamente.', life: 5000});
+                this.$toast.add({severity:'info', summary: 'Actualizado', detail: this.selectedEstablecimiento.estName + ' Se ha actualizado correctamente.', life: 5000});
                 location.reload();
             })
             .catch(err => {
@@ -387,7 +388,7 @@ export default {
             })
             .then(response => {
             console.log(response.data);  
-            this.$toast.add({severity:'success', summary: 'Actualizado', detail:'Se ha actualizado correctamente tus datos.', life: 5000});
+            this.$toast.add({severity:'info', summary: 'Actualizado', detail:'Se ha actualizado correctamente tus datos.', life: 5000});
             this.closeModal();
             })
             .catch(error => {
