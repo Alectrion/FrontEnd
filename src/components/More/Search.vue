@@ -107,7 +107,7 @@
         <div class="Detalles" style="position: relative; height: 83px;">
           <h5>Dirección:</h5><p>{{establecimiento.dir}}</p>
           <div class="tel" style="position: relative; left: 65%; width: 20%; transform: translateY(-130%);">
-            <h5 id="Telef">Telefono:</h5><p>{{establecimiento.tel}}</p>
+            <h5 id="Telef">Teléfono:</h5><p>{{establecimiento.tel}}</p>
           </div>
         </div>
         <div class="p-field">
@@ -202,7 +202,7 @@ export default {
                 {
                   label: 'Personas',
                   backgroundColor: '#458fff',
-                  data: [59, 63, 69, 75, 80, 100, 99, 70]
+                  data: [1]
                 },
               ]
             },

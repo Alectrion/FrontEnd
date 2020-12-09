@@ -37,6 +37,7 @@ import Toast from 'primevue/toast';
 import Rating from 'primevue/rating';
 import Fieldset from 'primevue/fieldset';
 import Panel from 'primevue/panel';
+import FileUpload from 'primevue/fileupload';
 import DataView from 'primevue/dataview';
 
 
@@ -68,6 +69,7 @@ Vue.component('Toast', Toast);
 Vue.component('Rating', Rating);
 Vue.component('Fieldset', Fieldset);
 Vue.component('Panel', Panel);
+Vue.component('FileUpload', FileUpload);
 Vue.component('Dataview', DataView);
 
 

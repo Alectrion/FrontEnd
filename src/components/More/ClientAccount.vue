@@ -156,7 +156,7 @@ export default {
       axios.delete(this.$store.state.backURL + path3 + this.account.id + "?access_token=" + getAuthenticationToken(), {data: {foo: 'bar'}
             })
             .then(response => {
-              this.$toast.add({severity:'error', summary: '¿Por qué te fuiste ?', detail:'Se ha eliminado tu cuenta.', life: 3000});
+              this.$toast.add({severity:'error', summary: '¿Por qué te fuiste ?', detail:'Se ha eliminado tu cuenta.', life: 5000});
               console.log(response);
               alert("Usuario borrado");
               this.$router.push("/welcome");

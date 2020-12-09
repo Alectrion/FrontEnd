@@ -75,7 +75,7 @@ export default {
   border: 1px solid #a945c7;
   width: 350px;
   height: 500px;
-  top: 25%;
+  top: 18%;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;

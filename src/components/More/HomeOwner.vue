@@ -1,131 +1,92 @@
 <template>
-    <div class="Owner">
-        <div class="Menu">
-            <Menubar :model="items" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;">
-                <template #end>
-                    <Menubar :model="items1" style="letter-spacing: 1px; font-family: Orbitron; font-weight: bold;"/>
-                </template>
-            </Menubar>
+  <div class="User">
+    <Toast position="top-left"/>
+    <div class="Menu">
+      <br>
+      <nav class="navbar navbar-expand-lg navbar-dark ">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <h4 class="nav-link"><router-link to='/home' style="color: white; text-decoration: none" title='Home'> Home</router-link></h4>
+            </li>
+            <li class="nav-item">
+              <h4 class="nav-link"><router-link to='/home' style="position: relative; color: white; text-decoration: none; left:5%;" title='Search'> Bienvenido {{account.names}} </router-link></h4>
+            </li>
+          </ul>
+          <ul class="navbar-nav ml-md-auto">
+            <li class="nav-item dropdown" >
+              <h4 class="nav-link dropdown-toggle dropdown-toggle-split" id="navbarDropdown" role="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:white">
+                 <router-link to='' style="color: white; text-decoration: none" title='usuario'> Propietario </router-link>
+              </h4>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+               <h5 class="dropdown-item"><router-link to='/myaccount' style="color: black; text-decoration: none" title='myaccount'>Mi Cuenta</router-link></h5>
+                <div class="dropdown-divider"></div>
+                <h5 class="dropdown-item"><router-link to='/welcome' style="color: black; text-decoration: none" title='Logout'>Cerrar Sesion</router-link></h5>
+              </div>
+            </li>
+          </ul>
         </div>
-            <Dialog header="Nuevo Establecimiento" footer="Footer" :visible.sync="displayModal" :modal="true" >
-                <span class="p-float-label">
-                    <InputText id="nombre" type="text" v-model="data.nombre" placeholder="Nombre Establecimiento" autocomplete="off"/>
-                    <label for="nombre"></label>
-                </span>
-                <br />
-                <span class="p-float-label">
-                    <InputText id="direccion" type="text"  v-model="data.direccion" placeholder="Direccion"/>
-                </span>
-                <br />
-                <span class="p-float-label">
-                    <InputText id="telefono" type="text"  v-model="data.telefono" placeholder="Telefono" />
-                    <label for="telefono"></label>
-                </span>
-                <br />
-                <span class="p-float-label">
-                    <InputText id="cupo" type="text"  v-model="data.cupo" placeholder="Cupo"/>
-                    <label for="cupo"></label>
-                </span>
-                <br />
-                <span class="p-float-label">
-                    <Textarea id="description" v-model="data.muro" required="true" rows="3" cols="25" placeholder="Descripción" />
-                    <label for="Descripción"></label>
-                </span>
-                <br />
-                <span class="p-float-label">
-                    <Dropdown v-model="data.categoria" :options="categorias" optionLabel="name" placeholder="Seleccionar Categoria" />
-                    <label for="categoria"></label>
-                </span>
-                <template #footer>
-                    <Button label="Guardar" icon="pi pi-check" @click="Agregar" />
-                    <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
-                </template>
-            </Dialog>
-            <div class="Editar">
-                <Dialog header="Editar Establecimiento" footer="Footer" :visible.sync="editModal" :modal="true" >
-                    <span class="p-float-label">
-                        <InputText id="nombre" type="text" v-model="selectedEstablecimiento.estName" placeholder="Nombre Establecimiento" disabled/>
-                        <label for="nombre"></label>
-                    </span>
-                    <br />
-                    <span class="p-float-label">
-                        <InputText id="direccion" type="text" required v-model="selectedEstablecimiento.dir" placeholder="Direccion"/>
-                    </span>
-                    <br />
-                    <span class="p-float-label">
-                        <InputText id="telefono" type="text" required v-model="selectedEstablecimiento.tel" placeholder="Telefono" />
-                        <label for="telefono"></label>
-                    </span>
-                    <br />
-                    <span class="p-float-label">
-                        <InputText id="cupo" type="text" required v-model="selectedEstablecimiento.cupoMax" placeholder="Cupo"/>
-                        <label for="cupo"></label>
-                    </span>
-                    <br />
-                    <span class="p-float-label">
-                        <Textarea id="description" v-model="selectedEstablecimiento.muro" required="true" rows="3" cols="45" placeholder="Descripción" />
-                        <label for="Descripción"></label>
-                    </span>
-                    <br />
-                    <span class="p-float-label">
-                        <Dropdown v-model="selectedEstablecimiento.tipoEstablecimiento" :options="categorias" placeholder="Seleccionar Categoria" />
-                        <label for="categoria"></label>
-                    </span>
-                    <template #footer>
-                        <Button label="Guardar" icon="pi pi-check" @click="Editar" />
-                        <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
-                    </template>
-                </Dialog>
-            </div>
-        <div class="Datos">
-            <DataTable :value="establecimientos" :expandedRows.sync="expandedRows" dataKey="id" :paginator="true" :rows="1"
-                @row-expand="onRowExpand" @row-collapse="onRowCollapse">
-                <Column headerStyle="background-color: #343a40; width: 3rem" :expander="true" />
-                <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="estName" header="NOMBRE ESTABLECIMIENTO" sortable></Column>
-                <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="dir" header="DIRECCION" sortable></Column>
-                <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="tel" header="TELEFONO" sortable></Column>
-                <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="tipoEstablecimiento" header="CATEGORIA" sortable></Column>
-                <Column headerStyle="letter-spacing: 1px; color: white; font-family: Orbitron; background-color: #343a40 " field="cupoMax" header="CUPO MAXIMO" sortable></Column>
-                <template #expansion="slotProps">
-                    <div class="orders-subtable">
-                        <div class="p-field" style="text-align: center; font-family: Orbitron; color:#455eff; height: 52px;">
-                            <h2>{{slotProps.data.estName}}</h2>
-                        </div >
-                        <div style="position:relative; height: 32px;">
-                            <h5>Personas actualmente: 20</h5>
+      </nav>
+    </div>
+    <br>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <h5 class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Mis Establecimientos</h5>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+          <div class="Datos Establecimientos">
+            <Carousel :value="establecimientos" :numVisible="1" :numScroll="1" :selection.sync="selectedEstablecimiento" dataKey="id"  
+              :responsiveOptions="responsiveOptions" class="custom-carousel" :circular="true"  
+              style="max-width: 695px; position:relative; left:24%">
+                <template #item="slotProps">
+                  <div class="product-item">
+                    <div class="product-item-content">
+                      <div class="p-mb-3">
+                        
+                      </div>
+                      <div>
+                        <br>
+                        <h1 class="p-mb-1" style="color:#455eff;"><b>{{slotProps.data.estName}}</b></h1><br>
+                        <h5 class="p-mt-0 p-mb-3" style="color:#7f8182;"><b>Código: </b>{{slotProps.data.id}}</h5>
+                        <h5 class="p-mt-0 p-mb-3"><b>Dirección: </b>{{slotProps.data.dir}}</h5>
+                        <h5 class="p-mt-0 p-mb-3"><b>Teléfono: </b>{{slotProps.data.tel}}</h5>
+                        <span class="badge badge-pill badge-primary" style="font-size: 20px">{{slotProps.data.tipoEstablecimiento}}</span>
+                        <div class="car-buttons p-mt-5">  
+                          <Button class="p-button-raised p-button-help" icon="pi pi-calendar" @click="showocupDialog(slotProps.data)" label="Reservas de mi establecimiento"  style="background-color: #883cae; font-weight: 700;" />
                         </div>
-                        <div class="Botones">
-                            <Button label="Mostrar aforo" class="p-button-raised p-button-success" style="position: relative; left:70%; width: 30%; transform: translateY(30%);"/>
-                            <br>     
-                        </div>
-                        <div style="position: relative; height: 47px;">
-                            <h5>Categoria:</h5>
-                            <RadioButton inputId="tipoEstablecimiento" name="categoria" :value="slotProps.data.tipoEstablecimiento" v-model="slotProps.data.tipoEstablecimiento" style="position: relative; left:8%; transform: translateY(-215%);"/>
-                            <label for="tipoEstablecimiento" style="position: relative; font-size: 18px; font-weight: 499; left:8%; transform: translateY(-120%);">{{ slotProps.data.tipoEstablecimiento}} </label>
-                        </div>
-                        <div class="Detalles" style="position: relative; height: 83px;">
-                            <h5>Dirección:</h5><p>{{slotProps.data.dir}}</p>
-                            <div class="tel" style="position: relative; left: 65%; width: 20%; transform: translateY(-130%);">
-                                <h5 id="Telef">Telefono:</h5><p>{{slotProps.data.tel}}</p>
-                            </div>
-                        </div>
-                        <div class="p-field">
-                            <h5>Muro:</h5>
-                            <Textarea v-model="slotProps.data.muro" :autoResize="true" rows="5" cols="30" style="width: 50%"/>
-                            <br>
-                        </div>
-                            <h5>Flujo de Personas:</h5>
-                            <Chart type="bar" :data="basicData" />
-                            <br>
-                        <div class="Mapa">
-                            <h5>Mapa:</h5>
-                            <GoogleMap style="position: relative;" :latitude= parseFloat(slotProps.data.latitud) :longitude= parseFloat(slotProps.data.longitud) />
-                        </div>
+                        <br>
+                        <h5 class="p-mt-0 p-mb-3"><b>Muro: </b></h5>
+                        <Textarea id="description" v-model="slotProps.data.muro" required="true" rows="5" cols="65" placeholder="Muro"  style="background: #eae4eb; position: relative; left:3%" />
+                        <Button icon="pi pi-check" class="p-button-rounded p-button-text"  @click="Editar(slotProps.data.muro)" style="position: relative;  width: 5%; left:-5%"/>
+                        <br><br>
+                        <h5>Mapa:</h5>
+                        <GoogleMap style="position: relative; " :latitude= parseFloat(slotProps.data.latitud) :longitude= parseFloat(slotProps.data.longitud) />
+                      </div>
                     </div>
+                  </div>
                 </template>
-            </DataTable>
+              </Carousel>
+          </div>
         </div>
     </div>
+    <div class="Reserva" >
+      <Dialog :style="{width: '40vw'}" position="right" :visible.sync="ocupDialog" :modal="true">
+        <template #header>
+          <br>
+          <h2 style="color: #883cae; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">{{selectedEstablecimiento.estName}}</h2>
+        </template>
+          <DataTable :value="ocupaciones" selectionMode="single" :paginator="true" dataKey="name" :rows="4">
+            <h3 style="color: #883cae; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Reservas del Establecimiento</h3>
+            <Column field="hora" header="Hora" sortable></Column>
+          </DataTable>
+      </Dialog>
+    </div>   
+  </div>
 </template>
 
 <script>
@@ -134,23 +95,27 @@ import axios from "axios";
 import {getAuthenticationToken} from '@/dataStorage';
 
 const path = "propietario/establecimiento"
-const path2 = "propietario/nuevo_establecimiento?access_token=" + getAuthenticationToken();
-
-
-
+const path3 = "persona?access_token=" + getAuthenticationToken() ;
+//const path2 = "propietario/establecimientos/misreservas/";
+//const access = "?access_token="
+const path4 = "ocupaciones"
 
 export default {
     name: "HomeOwner",
     components: {
-        GoogleMap
+      GoogleMap 
     },
     data() {
-		return {
+    return {
+            account: null,
             establecimientos: null,
             establecimiento: {},
             selectedEstablecimiento: {},
+            ocupaciones: null,
             displayModal: false,
+            ocupDialog: false,
             editModal: false,
+            EstInfo: false,
             favoritos: false,
             expandedRows: [],
             data: {
@@ -166,7 +131,7 @@ export default {
                 'Restaurante', 'Gimnasio', 'Supermercado', 'Barberia', 'Motel'
             ],
             basicData: {
-              labels: ['7-9', '9-11', '11-1', '1-3', '3-5', '5-7', '7-9','9-11'],
+              labels: ['7am - 8am', '8am - 9am', '9am - 10am', '10am - 11am', '11am - 12pm', '12pm - 1pm', '1pm - 2pm','2pm - 3pm'],
               datasets: [
                 {
                   label: 'Personas',
@@ -175,61 +140,41 @@ export default {
                 },
               ]
             },
-			items: [
-                {
-                    label: "HOME",
-                    icon:'pi pi-home',
-                    to: "/home"
-                },
-                {
-                    label: "MIS ESTABLECIMIENTOS",
-                    icon:'pi pi-briefcase',
-                    to: '/myaccount'
-                },
-            ],
-            items1: [
-                {
-                    label: 'Propietario',
-                    icon:'pi pi-fw pi-user',
-                    items:[
-                        {
-                          label: 'Mi Cuenta ',
-                          icon:'pi pi-fw pi-user',
-                          to: '/myaccount'
-                        },
-                        {
-                          label: 'Cerrar Sesion',
-                          icon:'pi pi-fw pi-power-off',
-                          to: '/login'
-                        }
-                    ]
-                },
+            hours: [
+                {name: '7am - 8am'},
+                {name: '8am - 9am'},
+                {name: '9am - 10am'},
+                {name: '10am - 11am'},
+                {name: '11am - 12pm'},
+                {name: '12pm - 1pm'},
+                {name: '1pm - 2pm'},
+                {name: '2pm - 3pm'},
+                {name: '3pm - 4pm'},
+                {name: '4pm - 5pm'},
+                {name: '5pm - 6pm'},
+                {name: '6pm - 7pm'},
+                {name: '7pm - 8pm'},
+                {name: '8pm - 9pm'},
+                {name: '9pm - 10pm' }
             ],
         };
     },
     mounted(){
         this.ShowEstablecimientos();
+        this.Prueba();
+        this.EstablecimientosOcup();
     },
 
     methods:{
-        Agregar() {
-            axios
-            .post(this.$store.state.backURL + path2,  {
-                estName: this.data.nombre,
-                dir: this.data.direccion,
-                tel: this.data.telefono,
-                cupoMax: this.data.cupo,
-                tipoEstablecimiento: this.data.categoria,
-                muro: this.data.muro
+        Prueba() {
+            axios.get(this.$store.state.backURL + path3, {
             })
             .then(response => {
-              console.log(response.data);
-              alert("Registro exitoso")
+                this.account = response.data;
             })
-            .catch(error => {
-              alert(error);
-            });
-            location.reload();
+            .catch(err => {
+                alert(err);
+            })
         },
         ShowEstablecimientos() {
             axios.get(this.$store.state.backURL + path + "?access_token=" + getAuthenticationToken(), {
@@ -240,6 +185,16 @@ export default {
             .catch(err => {
                 alert(err);
             })
+        },
+        EstablecimientosOcup(){
+          axios.get(this.$store.state.backURL + path4, {
+          })
+          .then(response => {
+            this.ocupaciones = response.data;
+          })
+          .catch(err => {
+            alert(err);
+          })
         },
         Editar() {
             axios.put(this.$store.state.backURL + path + "/editar/" + this.selectedEstablecimiento.id + "?access_token=" + getAuthenticationToken(), {
@@ -259,53 +214,66 @@ export default {
             })
             location.reload();
         },
-        Borrar() {
-            axios.delete(this.$store.state.backURL + path + "/" + this.selectedEstablecimiento.id + "?access_token=" + getAuthenticationToken(), {data: {foo: 'bar'}
-            })
-            .then(response => {
-                location.reload();
-                console.log(response);
-            })   
-        },
         showSaveModal() {
             this.displayModal = true;
         },
         showEditModal() {
             this.editModal = true;
         },
+        showocupDialog(selectedEstablecimiento){
+            this.selectedEstablecimiento = {...selectedEstablecimiento};
+            this.ocupDialog = true;
+        },
         closeModal() {
             this.displayModal = false;
             this.editModal = false;
-        },
-        onRowExpand(establecimiento,event) {
-            this.establecimiento = {...establecimiento};
-            this.$toast.add({severity: 'info', summary: 'Product Expanded', detail: event.data.estName, life: 3000});
-        },
-        onRowCollapse(establecimiento,event) {
-            this.establecimiento = {...establecimiento};
-            this.$toast.add({severity: 'success', summary: 'Product Collapsed', detail: event.data.estName, life: 3000});
-        },
-        expandAll(establecimiento) {
-            this.establecimiento = {...establecimiento};
-            this.expandedRows = this.establecimientos.filter(p => p.id);
-            this.$toast.add({severity: 'success', summary: 'All Rows Expanded', life: 3000});
-        },
-        collapseAll() {
-            this.expandedRows = null;
-            this.$toast.add({severity: 'success', summary: 'All Rows Collapsed', life: 3000});
+            this.ocupDialog = false;
         },
     }
 };
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css?family=Orbitron');
-.Owner {
-    position: absolute;
-    background-color: #3d0c421a;
-    padding: 0px;
-    margin: 0%;
-    width: 100%;
-    height: 100%;
-    font-family: Orbitron;
+@import url('https://fonts.googleapis.com/css?family=Open Sans');
+.User {
+  position: relative;
+  background: url("../img/fondo.jpeg") no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-color: #3d0c421a;
+  color: white;
+  padding: 0px;
+  margin: 0%;
+  width: 100%;
+  height: 100%; 
+    
 }
+
+.product-item .product-item-content {
+  position: relative;
+  border: 1px solid var(--surface-d);
+  box-shadow: 0 0 5px#883cae, 0 0 5px white, 0 0 5px #883cae;
+  border-radius: 10px;
+  margin: .3rem;
+  text-align: center;
+  background: rgb(255, 255, 255, 0.3);
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+.product-image {
+  width: 50%;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
+}
+
+.Menu {
+  position: relative;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color:white;
+}
+
+h4{
+  display: inline-block;
+  margin: 0 20px;
+}
+
+</style>

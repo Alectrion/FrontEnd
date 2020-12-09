@@ -26,8 +26,6 @@
         </nav>
         <br>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <br>
-        <br>
             <li class="nav-item">
             <h5 class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Mis Establecimientos</h5>
             </li>
@@ -39,24 +37,25 @@
 
         <!--Tabla Establecimientos-->
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">           
-                <div class="Datos">
+                <div class="Datos Establecimientos" style="">
                     <Carousel :value="establecimientos" :numVisible="1" :numScroll="1" :selection.sync="selectedEstablecimiento" dataKey="id"  
-                    :responsiveOptions="responsiveOptions" orientation="vertical" verticalViewPortHeight="352px" class="custom-carousel" 
-                    :circular="true" :autoplayInterval="3000" style="max-width: 400px; margin-top: 2em">
+                    :responsiveOptions="responsiveOptions" :circular="true" class="custom-carousel" 
+                    style="max-width: 495px; position:relative; left:32%;">
 
                         <template #item="slotProps">
                         <div class="product-item">
                             <div class="product-item-content">
-                            <div class="p-mb-3">
-                                
-                            </div>
                             <div>
-                                <h1 class="p-mb-1">{{slotProps.data.estName}}</h1>
-                                <h6 class="p-mt-0 p-mb-3">{{slotProps.data.dir}}</h6>
-                                <h6 class="p-mt-0 p-mb-3">Tel: {{slotProps.data.tel}}</h6>
+                                <h1 class="p-mb-1" style="color:#455eff;"><b>{{slotProps.data.estName}}</b></h1><br>
+                                <h5 class="p-mt-0 p-mb-3" style="color:#7f8182;"><b>Código: </b>{{slotProps.data.id}}</h5>
+                                <h5 class="p-mt-0 p-mb-3">{{slotProps.data.dir}}</h5>
+                                <h5 class="p-mt-0 p-mb-3">Tel: {{slotProps.data.tel}}</h5>
                                 <span class="badge badge-pill badge-primary" style="font-size: 20px">{{slotProps.data.tipoEstablecimiento}}</span>
+                                <br><br>
+                                <Textarea id="description" v-model="slotProps.data.muro" required="true" rows="3" cols="25" placeholder="Muro"  style="background: #eae4eb; position: relative; left:3%" />
+                                <Button icon="pi pi-check" class="p-button-rounded p-button-text"  @click="Editar(slotProps.data.muro)" style="position: relative;  width: 5%; left:-5%"/>
                                 <div class="car-buttons p-mt-5">  
-                                    <Button class="p-button-raised p-button-help" icon="pi pi-pencil" label="Editar" @click="showEditModal(slotProps.data)" style="background-color: #883cae;" />
+                                    <Button class="p-button-raised p-button-help" icon="pi pi-check-square" label="Editar" @click="showEditModal(slotProps.data)" style="background-color: #883cae;" />
                                     <Button class="p-button-raised p-button-danger" icon="pi pi-trash" label="Eliminar" @click="openConfirmationEstablecimiento(slotProps.data)"/>
                                 </div> 
                             </div>
@@ -73,7 +72,7 @@
                     <div class="card text-center" style="position:relative; ">
                         <div class="card-header" style="color: #455eff; font-size: 22px; "><b>Mi Cuenta</b></div>    
                         <div class="card-body" style="color: black;" >
-                            <img src="../img/user.jpg" class="responsive" alt="..." style="max-width: 160px;">
+                            <img src="../img/user.jpg" class="responsive" alt="..." style="max-width: 153px;">
                             <br>
                             <h4 class="card-title" style="position:relative; text-align: center;">{{account.names}}</h4>
                             <br>
@@ -82,7 +81,7 @@
                             <br>
                             <h5 class="card-text"><b>Usuario: </b>{{account.username}}</h5>
                             <br>
-                            <h5 class="card-text"><b>Email: </b>{{account.email}}</h5>
+                            <h6 class="card-text"><b>Email: </b>{{account.email}}</h6>
                         </div>
                         <div class="card-footer">
                             <Button class="p-button-raised p-button-help" icon="pi pi-replay" label="Actualizar datos" @click="showEditAccount" style="background-color: #883cae;" />
@@ -109,7 +108,7 @@
             </span>
             <br />
             <span class="p-float-label">
-                <InputText id="cupo" type="text"  v-model="data.cupo" placeholder="Cupo"/>
+                <InputText id="cupo" type="text"  v-model="data.cupo" placeholder="Cupo Máximo"/>
                 <label for="cupo"></label>
             </span>
             <br />
@@ -133,6 +132,14 @@
                 <Dropdown v-model="data.categoria" :options="categorias" placeholder="Seleccionar Categoria" />
                 <label for="categoria"></label>
             </span>
+            <span class="p-float-label">
+                <h5>Imagen Ocupación: </h5>
+                <FileUpload name="demo[]" url="./upload.php" @upload="onUpload" :multiple="true" accept="image/*" :maxFileSize="1000000">
+                    <template #empty>
+                        <p>Arrastre y suelte archivos hasta aquí para cargarlos.</p>
+                    </template>
+                </FileUpload>            
+            </span>
         <template #footer>
             <Button label="Guardar" icon="pi pi-check" @click="Agregar" />
             <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
@@ -141,7 +148,7 @@
 
     <!--Dialog Editar Establecimiento-->            
         <div class="Editar">
-            <Dialog header="Editar Establecimiento" footer="Footer" :visible.sync="editModal" :modal="true" >
+            <Dialog header="Editar Establecimiento" footer="Footer" position="left" :visible.sync="editModal" :modal="true" >
                 <span class="p-float-label">
                     <InputText id="nombre" type="text" v-model="selectedEstablecimiento.estName" placeholder="Escoge uno primero!" disabled/>
                     <label for="nombre"></label>
@@ -181,6 +188,15 @@
                     <Dropdown v-model="selectedEstablecimiento.tipoEstablecimiento" :options="categorias" placeholder="Seleccionar Categoria" />
                     <label for="categoria"></label>
                 </span>
+                <br>
+                <span class="p-float-label">
+                    <h5>Imagen Ocupación: </h5>
+                    <FileUpload name="demo[]" url="./upload.php" @upload="onUpload" :multiple="true" accept="image/*" :maxFileSize="1000000">
+                        <template #empty>
+                            <p>Arrastre y suelte archivos hasta aquí para cargarlos.</p>
+                        </template>
+                    </FileUpload>            
+                </span>
                 <template #footer>
                     <Button label="Guardar" icon="pi pi-check" @click="Editar" />
                     <Button label="Cancelar" icon="pi pi-times" @click="closeModal" class="p-button-secondary" />
@@ -215,7 +231,7 @@
             <Dialog header="Eliminar Establecimiento" :visible.sync="displayConfirmationEstablecimiento" :style="{width: '350px'}" :modal="true">
                 <div class="confirmation-content">
                     <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
-                    <span>¿Estas seguro de eliminar tu establecimiento?</span>
+                    <span>¿Estas seguro de eliminar <b>{{this.selectedEstablecimiento.estName}}</b>?</span>
                 </div>
                 <template #footer>
                     <Button label="Si" icon="pi pi-check" @click="Borrar" class="p-button-text" autofocus />
@@ -241,19 +257,13 @@
 <script>
 import axios from "axios";
 import {getAuthenticationToken} from '@/dataStorage';
-
 const path = "propietario/establecimiento"
 const path2 = "usuario/editar/";
 const path3 = "persona?access_token=" + getAuthenticationToken() ;
 const path4 = "propietario/nuevo_establecimiento?access_token=" + getAuthenticationToken();
 const path5 = "usuario/delete/"
-
-
-
-
 export default {
     name: "HomeOwner",
-
     data() {
 		return {
             account: null,
@@ -279,14 +289,33 @@ export default {
             categorias: [
                 'Restaurante', 'Gimnasio', 'Supermercado', 'Barberia', 'Motel'
             ],
+            responsiveOptions: [
+              {
+                breakpoint: '1024px',
+                numVisible: 1,
+                numScroll: 1
+              },
+              {
+                breakpoint: '500px',
+                numVisible: 1,
+                numScroll: 1
+              },
+              {
+                breakpoint: '380px',
+                numVisible: 1,
+                numScroll: 1
+              }
+            ]
         };
     },
     mounted(){
         this.ShowEstablecimientos();
         this.Prueba();
     },
-
     methods:{
+        onUpload() {
+			this.$toast.add({severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000});
+		},
         Prueba() {
             axios.get(this.$store.state.backURL + path3, {
             })
@@ -311,12 +340,13 @@ export default {
             })
             .then(response => {
                 console.log(response.data);
+                this.$toast.add({severity:'success', summary: 'Registro Exitoso', detail:'Se ha agregado correctamente tu establecimiento.', life: 5000});
                 alert("Registro exitoso");
+                location.reload();
             })
             .catch(error => {
               alert(error);
             });
-            location.reload();
         },
         ShowEstablecimientos() {
             axios.get(this.$store.state.backURL + path + "?access_token=" + getAuthenticationToken(), {
@@ -340,13 +370,13 @@ export default {
                 longitud: this.selectedEstablecimiento.longitud
             })
             .then(response => {
-                this.establecimientos = response.data;
-                alert("Actualizado")
+                console.log(response.data);
+                this.$toast.add({severity:'success', summary: 'Actualizado', detail: this.selectedEstablecimiento.estName + ' Se ha actualizado correctamente.', life: 5000});
+                location.reload();
             })
             .catch(err => {
                 alert(err);
             })
-            location.reload();
         },
         EditarCuenta() {
         axios
@@ -357,7 +387,7 @@ export default {
             })
             .then(response => {
             console.log(response.data);  
-             this.$toast.add({severity:'success', summary: 'Actualizado', detail:'Se ha actualizado correctamente tus datos.', life: 3000});
+            this.$toast.add({severity:'success', summary: 'Actualizado', detail:'Se ha actualizado correctamente tus datos.', life: 5000});
             this.closeModal();
             })
             .catch(error => {
@@ -379,18 +409,19 @@ export default {
             axios.delete(this.$store.state.backURL + path + "/" + this.selectedEstablecimiento.id + "?access_token=" + getAuthenticationToken(), {data: {foo: 'bar'}
             })
             .then(response => {
-                location.reload();
                 console.log(response);
+                this.$toast.add({severity:'success', summary: 'Establecimiento Eliminado',  detail:'Se ha eliminado correctamente tu establecimiento.', life: 5000});
+                location.reload();
             })   
         },
         showSaveModal() {
             this.displayModal = true;
         },
-        showEditModal() {
+        showEditModal(selectedEstablecimiento) {
+            this.selectedEstablecimiento = {...selectedEstablecimiento};
             this.editModal = true;
         },
         showEditAccount() {
-        this.data;
         this.displayEdit = true;
         },
         closeModal() {
@@ -404,7 +435,8 @@ export default {
         closeConfirmation() {
             this.displayConfirmation = false;
         },
-        openConfirmationEstablecimiento() {
+        openConfirmationEstablecimiento(selectedEstablecimiento) {
+            this.selectedEstablecimiento = {...selectedEstablecimiento};
             this.displayConfirmationEstablecimiento = true;
         },
         closeConfirmationEstablecimiento() {
@@ -425,7 +457,7 @@ export default {
   padding: 0px;
   margin: 0%;
   width: 100%;
-  height: 100vh; 
+  height: 100%; 
 }
 h4{
   display: inline-block;
@@ -434,15 +466,18 @@ h4{
 .product-item .product-item-content {
   position: relative;
   border: 1px solid var(--surface-d);
-  box-shadow: 0 0 5px#1eb1eb, 0 0 5px white, 0 0 5px #1eb1eb;
-  border-radius: 30px;
+  box-shadow: 0 0 5px#883cae, 0 0 5px white, 0 0 5px #883cae;
+  border-radius: 15px;
   margin: .3rem;
   text-align: center;
   padding: 2rem 0;
+  background: white;
+  color: black;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }
-
 .product-image {
     width: 50%;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
 }
+
 </style>

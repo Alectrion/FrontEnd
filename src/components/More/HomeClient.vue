@@ -71,15 +71,10 @@
         </div>
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab"  @click="ShowEstablecimientos">
           <div class="datos" style="position: relative; max-width:35%; left: 32%;">
-            <div class="card text-center" style="position:relative; ">
-              <DataTable :value="establecimientos" style="width: 500px; position: relative; left: 50%; transform: translateX(-50%);" :selection.sync="selectedEstablecimiento" selectionMode="single" dataKey="id" :rows="1">
-                <Column field="id" header="Codigo"></Column>
-                <Column field="estName" header="Nombre"></Column>
-                <Column field="dir" header="Direccion"></Column>
-                <Column field="tel" header="Telefono"></Column>
-                <Column field="tipoEstablecimiento" header="Categoria"></Column>
+              <DataTable :value="establecimientos" style="width: 500px; position: relative; left: 50%; transform: translateX(-50%);" :selection.sync="selectedEstablecimiento" selectionMode="single" :paginator="true" :rows="5" dataKey="id">
+                <Column field="estID" header="Establecimiento"></Column>
+                <Column field="horario" header="Hora"></Column>
               </DataTable>
-            </div>
           </div>
         </div>
     </div>
@@ -130,7 +125,7 @@
           <br>
           <h2 style="color: #883cae; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">{{establecimiento.estName}}</h2>
         </template>
-          <DataTable :value="hours" :selection.sync="selectedhour" selectionMode="single" :paginator="true" dataKey="name" :rows="4">
+          <DataTable :value="hours" :selection.sync="selectedhour" selectionMode="single" :paginator="true" :rows="4" dataKey="name">
             <h3 style="color: #883cae; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Reserva</h3>
             <Column field="name" header="Hora" sortable></Column>
           </DataTable>
@@ -227,8 +222,8 @@ export default {
         }
   },
    mounted(){
-        this.Persona();
-        this.ActFav();
+      this.Persona();
+      this.ActFav();
     },
   
   methods: {
